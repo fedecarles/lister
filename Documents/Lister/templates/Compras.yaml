@@ -1,0 +1,10 @@
+Compras:
+- field_name: Pord
+  type: Text
+- field_name: Cant
+  type: Number
+- field_name: Cat
+  type: Category
+  categories:
+  - Cat1
+  - Cat2

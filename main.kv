@@ -1,0 +1,227 @@
+ScreenManager:
+    MainScreen:
+    ItemsScreen:
+    NewItemScreen:
+    ViewItemScreen:
+    TemplateCreateScreen:
+
+
+<MainScreen>
+    name: "main_screen"
+    id: listar
+    MDFloatLayout:
+        MDLabel:
+            halign: "center"
+            markup: True
+            text: "[b][size=48]Lister[/size][/b]"
+            pos_hint: {"y": 0.45}
+        
+        ScrollView:
+            pos_hint: {"center_y": 0.5, "center_x": 0.5}
+            size_hint: 0.9, 0.8
+    
+            MDList:
+                spacing: "16dp"
+                id: container
+    
+        MDFloatingActionButton:
+            icon: "plus-thick"
+            id: menu_btn
+            on_release: root.manager.current = "template_create_screen"
+            pos_hint: {'center_x': .85, 'center_y': .1}
+    
+
+<ListOfLists>
+    id: list_of_lists
+    markup: True
+
+    IconRightWidget:
+        icon: "trash-can-outline"
+        theme_text_color: "Custom"
+        text_color: 1, 0, 0, 1
+        on_release: (root.delete_dialog(list_of_lists), app.refresh_folder_view())
+
+<ListOfItems>
+    id: list_of_items
+    markup: True
+
+    IconRightWidget:
+        icon: "trash-can-outline"
+        theme_text_color: "Custom"
+        text_color: 1, 0, 0, 1
+        on_release: (root.delete_item(list_of_items), app.refresh_folder_view())
+
+<ItemsScreen>
+    name: "items_screen"
+    id: items_screen
+
+    MDBoxLayout:
+        orientation: "vertical"
+        spacing: 10
+
+        MDTopAppBar:
+            id: topbar
+            halign: "center"
+            right_action_items: [["dots-vertical", lambda x: root.menu_open(topbar)]]
+            elevation: 12
+
+        MDFillRoundFlatIconButton:
+            id: sort_button
+            text: "Sort"
+            icon: "sort"
+            elevation: 12
+            pos_hint: {"center_x": .5}
+            on_release: root.sort_dropdown(sort_button)
+
+        ScrollView:
+            pos_hint: {"center_y": 0.5, "center_x": 0.5}
+            size_hint: 0.9, 0.8
+            id: item_list
+    
+    MDFloatingActionButton:
+        icon: "pencil-outline"
+        id: menu_btn
+        on_release: root.new_item(topbar.title) 
+        elevation_normal: 12
+        pos_hint: {"center_x": 0.85, "center_y": 0.1}
+
+    MDFillRoundFlatIconButton:
+        text: "Back"
+        icon: "backspace"
+        icon_size: "30sp"
+        on_release: root.manager.current = 'main_screen'
+        pos_hint: {'center_x': .15, 'center_y': .1}
+
+
+<NewItemScreen>
+    name: "new_item_screen"
+    id: new_item
+
+    MDLabel:
+        id: item_title
+        halign: "center"
+        font_size: dp(24)
+        markup: True
+        pos_hint: {"y": 0.45}
+
+    ScrollView:
+        pos_hint: {'top': 0.5 + 0.8/2}
+        MDBoxLayout:
+            orientation: "vertical"
+            adaptive_height:True
+            size_hint_y: None
+            padding: dp(20)
+            spacing: dp(20)
+            id: added_items
+
+    MDFillRoundFlatIconButton:
+        text: "Save"
+        icon: "content-save"
+        icon_size: "30sp"
+        on_release: root.on_save()
+        pos_hint: {'center_x': .85, 'center_y': .1}
+
+    MDFillRoundFlatIconButton:
+        text: "Back"
+        icon: "backspace"
+        icon_size: "30sp"
+        on_release: root.manager.current = 'items_screen'
+        pos_hint: {'center_x': .15, 'center_y': .1}
+
+
+<ViewItemScreen>
+    name: "view_item_screen"
+    orientation: "vertical"
+    id: view_item
+
+    MDLabel:
+        id: item_title
+        halign: "center"
+        opacity: 0
+        pos_hint: {"y": 0.45}
+
+    MDLabel:
+        id: display_title
+        halign: "center"
+        font_size: dp(24)
+        markup: True
+        pos_hint: {"y": 0.45}
+
+    ScrollView:
+        pos_hint: {'top': 0.5 + 0.8/2}
+        MDBoxLayout:
+            orientation: "vertical"
+            adaptive_height:True
+            size_hint_y: None
+            padding: dp(20)
+            spacing: dp(20)
+            id: added_items
+
+    MDFillRoundFlatIconButton:
+        text: "Save"
+        icon: "content-save"
+        icon_size: "30sp"
+        on_release: root.on_save()
+        pos_hint: {'center_x': .85, 'center_y': .1}
+
+    MDFillRoundFlatIconButton:
+        text: "Back"
+        icon: "backspace"
+        icon_size: "30sp"
+        on_release: root.manager.current = 'items_screen'
+        pos_hint: {'center_x': .15, 'center_y': .1}
+
+
+<TemplateCreateScreen>
+    name: "template_create_screen"
+    id: template_create_screen
+
+    MDBoxLayout:
+        orientation: "horizontal"
+        padding: [20, 20, 20, 20]
+
+        MDTextField:
+            pos_hint: {"top": 0.9}
+            id: list_name
+            helper_text: "List Name"
+            helper_text_mode: "persistent"
+
+        MDIconButton:
+            pos_hint: {"top": 0.9}
+            icon: "plus-thick"
+            on_release: root.add_field()
+
+    MDList:
+        size_hint_x: .7
+        pos_hint: {"top": 0.8}
+        id: added_fields
+        padding: [50, 0, 50, 25]
+
+    MDFillRoundFlatIconButton:
+        text: "Save"
+        icon: "content-save"
+        icon_size: "30sp"
+        on_release: (root.on_save(), app.refresh_folder_view())
+        pos_hint: {'center_x': .85, 'center_y': .1}
+    
+    MDFillRoundFlatIconButton:
+        text: "Back"
+        icon: "backspace"
+        icon_size: "30sp"
+        on_release: root.manager.current = "main_screen"
+        pos_hint: {'center_x': .15, 'center_y': .1}
+
+<CategoryInputDialog>
+    orientation: "vertical"
+    padding: dp(20)
+    size_hint_y: None
+    adaptive_height: True
+
+    MDLabel:
+        text: "Enter Categories"
+    MDTextField:
+        id: categories
+        hint_text: "Category A, Category B..."
+        helper_text_mode: "on_focus"
+        padding: dp(10)
+
