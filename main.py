@@ -8,8 +8,16 @@ from components.lists import ListOfLists
 from kivy.utils import platform
 from kivymd.app import MDApp
 
-from utils import get_folder_list, LIST_PATH, TEMPLATE_PATH, EXPORTS_PATH
+from utils import (
+    open_yaml_file,
+    get_folder_list,
+    LIST_PATH,
+    TEMPLATE_PATH,
+    EXPORTS_PATH,
+)
 import os
+
+CONFIG = open_yaml_file("config.yaml")
 
 
 class MainApp(MDApp):
@@ -73,7 +81,7 @@ class MainApp(MDApp):
             os.makedirs(EXPORTS_PATH, exist_ok=True)
 
     def build(self):
-        self.theme_cls.theme_style = "Dark"
+        self.theme_cls.theme_style = CONFIG["theme"]
         self.theme_cls.primary_palette = "DeepPurple"
         self.theme_cls.primary_hue = "200"
         self.create_dirs()
