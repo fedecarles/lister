@@ -16,7 +16,7 @@ ScreenManager:
             title: "Lister"
             id: topbar
             halign: "center"
-            right_action_items: [["magnify", lambda x: self.search()], ["dots-vertical", lambda x: root.main_menu_open(topbar)]]
+            right_action_items: [["eraser", lambda x: root.reset_list()],["magnify", lambda x: root.open_search_dialog()], ["dots-vertical", lambda x: root.main_menu_open(topbar)]]
             elevation: 2
        
         ScrollView:
@@ -228,4 +228,12 @@ ScreenManager:
         hint_text: "Category A, Category B..."
         helper_text_mode: "on_focus"
         padding: dp(10)
+
+<SearchDialog>:
+    size_hint: 0.5, None
+    orientation: "vertical"
+
+    MDTextField:
+        id: search_field
+        hint_text: "Search"
 
