@@ -35,8 +35,9 @@ class TemplateCreateScreen(Screen):
             orientation="horizontal",
             size_hint_y=None,
             adaptive_height=True,
+            padding=10,
         )
-        field_name = MDTextField(hint_text="Field name...", id="name")
+        field_name = MDTextField(hint_text="Field name...", id="name", mode="round")
         field_type_btn = MDRaisedButton(text="Text", id="type_btn")
         field_type_btn.bind(
             on_release=lambda x, btn=field_type_btn: self.menu_open(btn)
