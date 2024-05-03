@@ -121,7 +121,12 @@ class ItemsScreen(Screen):
             {
                 "text": "Export",
                 "viewclass": "OneLineListItem",
-                "on_release": lambda x="Export": self.export_data(self.title),
+                "on_release": lambda x="export": self.export_data(self.title),
+            },
+            {
+                "text": "Edit Template",
+                "viewclass": "OneLineListItem",
+                "on_release": lambda x="edit": self.go_to_edit_template(),
             },
         ]
         menu = MDDropdownMenu(
@@ -201,3 +206,9 @@ class ItemsScreen(Screen):
     def reset_list(self):
         self.ids.item_list.remove_widget(self.md_list)
         self.populate_list_view()
+
+    def go_to_edit_template(self):
+        topbar = get_screen_element("edit_template_screen", "topbar")
+        topbar.title = self.ids.topbar.title
+
+        self.manager.current = "edit_template_screen"

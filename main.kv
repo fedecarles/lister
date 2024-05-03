@@ -4,6 +4,7 @@ ScreenManager:
     NewItemScreen:
     ViewItemScreen:
     TemplateCreateScreen:
+    EditTemplateScreen
 
 
 <MainScreen>
@@ -214,6 +215,42 @@ ScreenManager:
         icon_size: "30sp"
         on_release: root.manager.current = "main_screen"
         pos_hint: {'center_x': .15, 'center_y': .1}
+
+<EditTemplateScreen>
+    name: "edit_template_screen"
+    id: edit_templat_screen
+
+    MDBoxLayout:
+        orientation: "vertical"
+        padding: 20
+
+        MDTopAppBar:
+            id: topbar
+            halign: "center"
+            elevation: 2
+
+        MDTextField:
+            id: template_text
+            multiline: True
+            size: 1, 1
+            pos_hint: {"center_y": .9}
+
+        MDLabel:
+ 
+    MDFillRoundFlatIconButton:
+        text: "Save"
+        icon: "content-save"
+        icon_size: "30sp"
+        on_release: root.on_save()
+        pos_hint: {'center_x': .85, 'center_y': .1}
+    
+    MDFillRoundFlatIconButton:
+        text: "Back"
+        icon: "backspace"
+        icon_size: "30sp"
+        on_release: root.manager.current = "main_screen"
+        pos_hint: {'center_x': .15, 'center_y': .1}
+
 
 <CategoryInputDialog>
     orientation: "vertical"

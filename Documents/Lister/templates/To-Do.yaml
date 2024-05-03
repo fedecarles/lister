@@ -3,3 +3,5 @@ To-Do:
   type: Text
 - field_name: Date
   type: Date
+- field_name: Done
+  type: Text

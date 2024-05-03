@@ -3,6 +3,7 @@ from screens.view_item_screen import ViewItemScreen
 from screens.new_item_screen import NewItemScreen
 from kivy.uix.screenmanager import ScreenManager
 from screens.items_screen import ItemsScreen
+from screens.edit_template_screen import EditTemplateScreen
 from screens.main_screen import MainScreen
 from components.lists import ListOfLists
 from kivy.utils import platform
@@ -92,6 +93,7 @@ class MainApp(MDApp):
         sm.add_widget(ItemsScreen(name="items_screen"))
         sm.add_widget(NewItemScreen(name="new_item_screen"))
         sm.add_widget(ViewItemScreen(name="view_item_screen"))
+        sm.add_widget(EditTemplateScreen(name="edit_template_screen"))
 
 
 if __name__ == "__main__":
