@@ -65,7 +65,7 @@ ScreenManager:
         MDTopAppBar:
             id: topbar
             halign: "center"
-            right_action_items: [["dots-vertical", lambda x: root.menu_open(topbar)]]
+            right_action_items: [["eraser", lambda x: root.reset_list()],["magnify", lambda x: root.open_search_dialog()], ["dots-vertical", lambda x: root.menu_open(topbar)]]
             elevation: 2
 
         MDFillRoundFlatIconButton:

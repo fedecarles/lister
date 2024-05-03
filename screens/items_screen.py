@@ -1,7 +1,10 @@
 """Screen for the List Items View."""
 
+from kivymd.uix.dialog import MDDialog
 from kivymd.uix.datatables import MDDataTable
 from kivymd.uix.menu import MDDropdownMenu
+from kivymd.uix.button import MDRaisedButton
+from components.dialogs import SearchDialog
 from kivy.uix.screenmanager import Screen
 from components.lists import ListOfItems
 from kivymd.uix.list import MDList
@@ -162,3 +165,39 @@ class ItemsScreen(Screen):
         get_screen_element("new_item_screen", "added_items").clear_widgets()
         get_screen_element("new_item_screen", "item_title").text = item
         change_screen("new_item_screen")
+
+    def open_search_dialog(self):
+        def search_callback(instance):
+            search_text = self.dialog.content_cls.ids.search_field.text
+
+            item_list = self.md_list
+            search_results = []
+            for item in item_list.children:
+                if search_text in item.text:
+                    search_results.append(item)
+
+            if search_results:
+                self.md_list.clear_widgets()
+                for item in search_results:
+                    self.md_list.add_widget(item)
+
+            self.dialog.dismiss()
+
+        def dismiss_dialog(instance):
+            self.dialog.dismiss()
+
+        self.dialog = MDDialog(
+            type="custom",
+            content_cls=SearchDialog(),
+            buttons=[
+                MDRaisedButton(
+                    text="Cancel", md_bg_color="red", on_release=dismiss_dialog
+                ),
+                MDRaisedButton(text="Search", on_release=search_callback),
+            ],
+        )
+        self.dialog.open()
+
+    def reset_list(self):
+        self.ids.item_list.remove_widget(self.md_list)
+        self.populate_list_view()
