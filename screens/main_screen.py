@@ -63,22 +63,22 @@ class MainScreen(Screen):
                 for item in search_results:
                     self.ids.container.add_widget(item)
 
-            self.dismiss_dialog()
+            self.dialog.dismiss()
+
+        def dismiss_dialog(instance):
+            self.dialog.dismiss()
 
         self.dialog = MDDialog(
             type="custom",
             content_cls=SearchDialog(),
             buttons=[
                 MDRaisedButton(
-                    text="Cancel", md_bg_color="red", on_release=self.dismiss_dialog
+                    text="Cancel", md_bg_color="red", on_release=dismiss_dialog
                 ),
                 MDRaisedButton(text="Search", on_release=search_callback),
             ],
         )
         self.dialog.open()
-
-    def dismiss_dialog(self):
-        self.dialog.dismiss()
 
     def reset_list(self):
         self.ids.container.clear_widgets()
