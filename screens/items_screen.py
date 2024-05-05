@@ -105,7 +105,7 @@ class ItemsScreen(Screen):
             text="Sort",
             pos_hint={"center_x": 0.5, "center_y": 0.9},
             icon="sort",
-            on_release=self.sort_dropdown,
+            on_release=lambda x: self.sort_dropdown(x),
         )
 
         self.add_widget(sort_btn)
