@@ -1,7 +1,0 @@
-To-Do:
-- field_name: Task
-  type: Text
-- field_name: Date
-  type: Date
-- field_name: Done
-  type: Text

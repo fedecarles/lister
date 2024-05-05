@@ -1,20 +1,22 @@
+"""Template Creation Screen"""
+
+import os
+
+from kivymd.uix.dialog import MDDialog
 from kivy.uix.screenmanager import Screen
 from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.textfield import MDTextField
 from kivymd.uix.button import MDRaisedButton
 from kivymd.uix.menu import MDDropdownMenu
-from kivymd.uix.dialog import MDDialog
+from kivymd.uix.textfield import MDTextField
 
 from components.dialogs import CategoryInputDialog
-
 from utils import (
-    get_folder_list,
-    change_screen,
-    save_to_yaml,
     LIST_PATH,
     TEMPLATE_PATH,
+    change_screen,
+    get_folder_list,
+    save_to_yaml,
 )
-import os
 
 
 class TemplateCreateScreen(Screen):
@@ -22,13 +24,13 @@ class TemplateCreateScreen(Screen):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.template_dialog = None
+        self.dialog = None
 
-    def on_enter(self):
+    def on_enter(self, *args):
         """Housekeeping on enter"""
         self.ids.added_fields.clear_widgets()
 
-    def add_field(self, *args):
+    def add_field(self):
         """Adds a field to the template on user request."""
 
         field_row = MDBoxLayout(
@@ -40,7 +42,7 @@ class TemplateCreateScreen(Screen):
         field_name = MDTextField(hint_text="Field name...", id="name", mode="round")
         field_type_btn = MDRaisedButton(text="Text", id="type_btn")
         field_type_btn.bind(
-            on_release=lambda x, btn=field_type_btn: self.menu_open(btn)
+            on_release=lambda _, btn=field_type_btn: self.menu_open(btn)
         )
         field_row.add_widget(field_name)
         field_row.add_widget(field_type_btn)
@@ -67,6 +69,7 @@ class TemplateCreateScreen(Screen):
         menu.open()
 
     def update_button_text(self, caller_btn, text):
+        """Updates the buton with category values."""
         caller_btn.text = text
         if text == "Category":
             self.dialog = MDDialog(
@@ -78,17 +81,19 @@ class TemplateCreateScreen(Screen):
                     ),
                     MDRaisedButton(
                         text="Save",
-                        on_release=lambda x="": self.save_categories(caller_btn, x),
+                        on_release=lambda _: self.set_categories(caller_btn),
                     ),
                 ],
             )
             self.dialog.open()
 
     def dismiss_dialog(self, *args):
-        self.dialog.dismiss()
+        """Closes the dialog."""
+        if self.dialog:
+            self.dialog.dismiss()
 
-    def save_categories(self, caller_btn, *args):
-        print(self.dialog.content_cls.ids)
+    def set_categories(self, caller_btn):
+        """Sets the categories as the button value."""
         categories = self.dialog.content_cls.ids.categories.text
         caller_btn.text = f"[{categories}]"
         self.dismiss_dialog()
@@ -101,9 +106,23 @@ class TemplateCreateScreen(Screen):
 
         folder_list = get_folder_list(LIST_PATH)
 
-        for w in md_boxlayouts.children:
-            name = w.children[1].text
-            typ = w.children[0].text
+        # Handle some commor errors.
+        if not md_boxlayouts.children:
+            MDDialog(text="Please add at least one field before saving.").open()
+            return
+
+        template_name = str(self.ids.list_name.text)
+        if not template_name:
+            MDDialog(text="Please enter a template name.").open()
+            return
+
+        if template_name in folder_list:
+            MDDialog(text="A Template already exists with that name.").open()
+            return
+
+        for widget in md_boxlayouts.children:
+            name = widget.children[1].text
+            typ = widget.children[0].text
             if typ not in ["Text", "Number", "Date"]:
                 categories = typ.strip("[]")
                 categories = categories.split(",")
@@ -121,13 +140,11 @@ class TemplateCreateScreen(Screen):
         template[template_name] = fields[::-1]  # reverse list
 
         # Save template as yaml
-        if template_name in folder_list:
-            MDDialog(text="A Template already exists  with than name.").open()
-        else:
-            yaml_file_path = f"{TEMPLATE_PATH}{template_name}.yaml"
+        yaml_file_path = f"{TEMPLATE_PATH}{template_name}.yaml"
+        try:
             save_to_yaml(yaml_file_path, template)
             print(f"YAML file '{yaml_file_path}' has been created successfully.")
-
-            # Create the folder for the list items.
             os.makedirs(LIST_PATH + self.ids.list_name.text, exist_ok=True)
             change_screen("main_screen")
+        except OSError as e:
+            MDDialog(text=f"Error saving Template: {str(e)}").open()

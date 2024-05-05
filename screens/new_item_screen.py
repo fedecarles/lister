@@ -1,10 +1,15 @@
-from kivy.uix.screenmanager import Screen
-from kivymd.uix.menu import MDDropdownMenu
-from kivymd.uix.textfield import MDTextField
-from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.pickers import MDDatePicker
+"""New Item Screen"""
+
 from datetime import datetime
-from utils import change_screen, open_yaml_file, save_to_yaml, TEMPLATE_PATH, LIST_PATH
+
+from kivy.uix.screenmanager import Screen
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.dialog.dialog import MDDialog
+from kivymd.uix.menu import MDDropdownMenu
+from kivymd.uix.pickers import MDDatePicker
+from kivymd.uix.textfield import MDTextField
+
+from utils import LIST_PATH, TEMPLATE_PATH, change_screen, open_yaml_file, save_to_yaml
 
 
 class NewItemScreen(Screen):
@@ -38,7 +43,7 @@ class NewItemScreen(Screen):
         for fields in template.values():
             for field in fields:
                 self.add_widget_by_field_type(placeholder, field)
-            added_items_layout.add_widget(placeholder)
+            added_items_layout.add_widget(placeholder, index=0)
 
     def add_widget_by_field_type(self, placeholder, field):
         """Builds widgets from template."""
@@ -47,27 +52,28 @@ class NewItemScreen(Screen):
         field_categories = field.get("categories", [])
         self.options[field_name] = field_categories
 
-        self.add_field = MDTextField(multiline=True)
-        self.add_field.helper_text = field_name
-        self.add_field.helper_text_mode = "persistent"
-        self.add_field.icon_right = "note-text-outline"
+        add_field = MDTextField(
+            multiline=True,
+            helper_text=field_name,
+            helper_text_mode="persistent",
+            icon_right="note-text-outline",
+        )
 
-        self.add_field.input_type = "number" if field_type == "Number" else "text"
-        self.add_field.icon_right = (
+        # for numeric fields, setl input type for numeric keyboard.
+        add_field.input_type = "number" if field_type == "Number" else "text"
+        add_field.icon_right = (
             "format-list-numbered" if field_type == "Number" else "text"
         )
 
         if field_type == "Date":
-            self.add_field.icon_right = "calendar-outline"
-            self.add_field.bind(focus=self.open_date_picker)
+            add_field.icon_right = "calendar-outline"
+            add_field.bind(focus=self.open_date_picker)
         elif field_type == "Category":
-            self.add_field.icon_right = "clipboard-list-outline"
+            add_field.icon_right = "clipboard-list-outline"
             self.category_fields.append(field_name)
-            self.add_field.bind(
-                focus=lambda instance, value: self.show_dropdown(instance)
-            )
+            add_field.bind(focus=lambda instance, _: self.show_dropdown(instance))
 
-        placeholder.add_widget(self.add_field)
+        placeholder.add_widget(add_field)
 
     def show_dropdown(self, text_field):
         """Displays the Category field dropdown."""
@@ -92,19 +98,25 @@ class NewItemScreen(Screen):
 
     def on_save(self):
         """Saves the item as a yaml file"""
-        all_items = self.ids.added_items
+        mapped_values = {}
+        all_items = self.ids.added_items.children
 
-        for w in all_items.children:
-            vals = [val.text for val in w.children if isinstance(val, MDTextField)]
-            labels = [
-                val.helper_text for val in w.children if isinstance(val, MDTextField)
-            ]
+        for item in all_items:
+            for child in item.children:
+                if isinstance(child, MDTextField):
+                    mapped_values[child.helper_text] = child.text
+        mapped_values = dict(reversed(mapped_values.items()))
 
-        mapped_values = dict(zip(labels, vals))
-        mapped_values = {k: v for k, v in reversed(mapped_values.items())}
+        # some error handling
+        if not list(mapped_values.values())[0]:
+            MDDialog(text="Primary field is empty").open()
+            return
 
         # Save as yaml. Use timestamp as suffix for the filenames.
-        new_date = datetime.now().strftime("%Y-%m-%d %H%M%S")
-        yaml_file_path = f"{LIST_PATH}{self.ids.item_title.text}/{self.ids.item_title.text}_{new_date}.yaml"
-        save_to_yaml(yaml_file_path, mapped_values)
-        change_screen("items_screen")
+        try:
+            new_date = datetime.now().strftime("%Y-%m-%d %H%M%S")
+            yaml_file_path = f"{LIST_PATH}{self.ids.item_title.text}/{self.ids.item_title.text}_{new_date}.yaml"
+            save_to_yaml(yaml_file_path, mapped_values)
+            change_screen("items_screen")
+        except OSError as e:
+            MDDialog(text=f"Error saving note: {str(e)}.").open()

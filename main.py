@@ -1,27 +1,37 @@
-from screens.template_create_screen import TemplateCreateScreen
-from screens.view_item_screen import ViewItemScreen
-from screens.new_item_screen import NewItemScreen
-from kivy.uix.screenmanager import ScreenManager
-from screens.items_screen import ItemsScreen
-from screens.edit_template_screen import EditTemplateScreen
-from screens.main_screen import MainScreen
-from components.lists import ListOfLists
-from kivy.utils import platform
-from kivymd.app import MDApp
+"""Main App Build"""
 
-from utils import (
-    open_yaml_file,
-    get_folder_list,
-    LIST_PATH,
-    TEMPLATE_PATH,
-    EXPORTS_PATH,
-)
 import os
 
-CONFIG = open_yaml_file("config.yaml")
+from kivymd.app import MDApp
+from kivy.utils import platform
+from kivy.uix.screenmanager import ScreenManager
+
+from components.lists import ListOfLists
+from screens.main_screen import MainScreen
+from screens.items_screen import ItemsScreen
+from screens.new_item_screen import NewItemScreen
+from screens.view_item_screen import ViewItemScreen
+from screens.edit_template_screen import EditTemplateScreen
+from screens.template_create_screen import TemplateCreateScreen
+from utils import (
+    EXPORTS_PATH,
+    LIST_PATH,
+    TEMPLATE_PATH,
+    ASSETS_PATH,
+    get_folder_list,
+    open_yaml_file,
+)
+
+CONFIG = open_yaml_file(os.path.join(ASSETS_PATH, "config.yaml"))
 
 
 class MainApp(MDApp):
+    """Main Lister App"""
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.folder_list = []
+
     def on_start(self):
         """Populate the List of Lists."""
         self.folder_list = get_folder_list(LIST_PATH)
@@ -82,6 +92,7 @@ class MainApp(MDApp):
             os.makedirs(EXPORTS_PATH, exist_ok=True)
 
     def build(self):
+        """Build app theme and screens"""
         self.theme_cls.theme_style = CONFIG["theme"]
         self.theme_cls.primary_palette = "DeepPurple"
         self.theme_cls.primary_hue = "200"

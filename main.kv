@@ -6,6 +6,9 @@ ScreenManager:
     TemplateCreateScreen:
     EditTemplateScreen
 
+<IconButton>:
+    size_hint: None, None
+    size: dp(48), dp(48)
 
 <MainScreen>
     name: "main_screen"
@@ -17,9 +20,9 @@ ScreenManager:
             title: "Lister"
             id: topbar
             halign: "center"
-            right_action_items: [["eraser", lambda x: root.reset_list()],["magnify", lambda x: root.open_search_dialog()], ["dots-vertical", lambda x: root.main_menu_open(topbar)]]
+            right_action_items: [["eraser", lambda x: root.reset_list()],["magnify", lambda x: root.open_search_dialog()], ["dots-vertical", lambda x: root.main_menu_open(x)]]
             elevation: 2
-       
+            
         ScrollView:
             pos_hint: {"center_y": 0.5, "center_x": 0.5}
             size_hint: 0.9, 0.8
@@ -43,7 +46,7 @@ ScreenManager:
         icon: "trash-can-outline"
         theme_text_color: "Custom"
         text_color: 1, 0, 0, 1
-        on_release: (root.delete_dialog(list_of_lists), app.refresh_folder_view())
+        on_release: (root.delete_list_dialog(), app.refresh_folder_view())
 
 <ListOfItems>
     id: list_of_items
@@ -61,40 +64,39 @@ ScreenManager:
 
     MDBoxLayout:
         orientation: "vertical"
-        spacing: 10
 
         MDTopAppBar:
             id: topbar
             halign: "center"
-            right_action_items: [["eraser", lambda x: root.reset_list()],["magnify", lambda x: root.open_search_dialog()], ["dots-vertical", lambda x: root.menu_open(topbar)]]
+            right_action_items: [["eraser", lambda x: root.reset_list()],["magnify", lambda x: root.open_search_dialog()], ["dots-vertical", lambda x: root.menu_open(x)]]
             elevation: 2
-
-        MDFillRoundFlatIconButton:
-            id: sort_button
-            text: "Sort"
-            icon: "sort"
-            elevation: 2
-            pos_hint: {"center_x": .5}
-            on_release: root.sort_dropdown(sort_button)
 
         ScrollView:
-            pos_hint: {"center_y": 0.5, "center_x": 0.5}
-            size_hint: 0.9, 0.8
+            pos_hint: {'center_y': 0.5, "center_x": 0.5}
+            size_hint_x: 0.9
+            spacing: 10
             id: item_list
-    
-    MDFloatingActionButton:
-        icon: "pencil-outline"
-        id: menu_btn
-        on_release: root.new_item(topbar.title) 
-        elevation_normal: 2
-        pos_hint: {"center_x": 0.85, "center_y": 0.1}
 
-    MDFillRoundFlatIconButton:
-        text: "Back"
-        icon: "backspace"
-        icon_size: "30sp"
-        on_release: root.manager.current = 'main_screen'
-        pos_hint: {'center_x': .15, 'center_y': .1}
+        MDBoxLayout:
+            size_hint: (.5, 0.25)
+            pos_hint: {'center_y': 0.1, "center_x": 0.6}
+            MDBoxLayout:
+                MDFillRoundFlatIconButton:
+                    text: "Back"
+                    icon: "backspace"
+                    icon_size: "30sp"
+                    on_release: root.manager.current = 'main_screen'
+                    pos_hint: {"center_y": 0.5, "center_x": 0.5}
+                    elevation: 2
+
+            MDBoxLayout:
+                MDFillRoundFlatIconButton:
+                    text: "New"
+                    icon: "pencil-outline"
+                    icon_size: "30sp"
+                    on_release: root.new_item(topbar.title) 
+                    pos_hint: {"center_y": 0.5, "center_x": 0.5}
+                    elevation: 2
 
 
 <NewItemScreen>
@@ -118,19 +120,25 @@ ScreenManager:
             spacing: dp(20)
             id: added_items
 
-    MDFillRoundFlatIconButton:
-        text: "Save"
-        icon: "content-save"
-        icon_size: "30sp"
-        on_release: root.on_save()
-        pos_hint: {'center_x': .85, 'center_y': .1}
+    MDBoxLayout:
+        size_hint: (.5, 0.1)
+        pos_hint: {'center_y': 0.1, "center_x": 0.6}
+        MDBoxLayout:
+            MDFillRoundFlatIconButton:
+                text: "Back"
+                icon: "backspace"
+                icon_size: "30sp"
+                on_release: root.manager.current = 'items_screen'
+                pos_hint: {"center_y": 0.5, "center_x": 0.5}
 
-    MDFillRoundFlatIconButton:
-        text: "Back"
-        icon: "backspace"
-        icon_size: "30sp"
-        on_release: root.manager.current = 'items_screen'
-        pos_hint: {'center_x': .15, 'center_y': .1}
+        MDBoxLayout:
+            MDFillRoundFlatIconButton:
+                text: "Save"
+                icon: "content-save"
+                icon_size: "30sp"
+                on_release: root.on_save()
+                pos_hint: {"center_y": 0.5, "center_x": 0.5}
+
 
 
 <ViewItemScreen>
@@ -161,19 +169,25 @@ ScreenManager:
             spacing: dp(20)
             id: added_items
 
-    MDFillRoundFlatIconButton:
-        text: "Save"
-        icon: "content-save"
-        icon_size: "30sp"
-        on_release: root.on_save()
-        pos_hint: {'center_x': .85, 'center_y': .1}
+    MDBoxLayout:
+        size_hint: (.5, 0.1)
+        pos_hint: {'center_y': 0.1, "center_x": 0.6}
+        MDBoxLayout:
+            MDFillRoundFlatIconButton:
+                text: "Back"
+                icon: "backspace"
+                icon_size: "30sp"
+                on_release: root.manager.current = 'items_screen'
+                pos_hint: {"center_y": 0.5, "center_x": 0.5}
 
-    MDFillRoundFlatIconButton:
-        text: "Back"
-        icon: "backspace"
-        icon_size: "30sp"
-        on_release: root.manager.current = 'items_screen'
-        pos_hint: {'center_x': .15, 'center_y': .1}
+        MDBoxLayout:
+            MDFillRoundFlatIconButton:
+                text: "Save"
+                icon: "content-save"
+                icon_size: "30sp"
+                on_release: root.on_save()
+                pos_hint: {"center_y": 0.5, "center_x": 0.5}
+
 
 
 <TemplateCreateScreen>
@@ -202,19 +216,23 @@ ScreenManager:
         id: added_fields
         padding: [50, 0, 50, 25]
 
-    MDFillRoundFlatIconButton:
-        text: "Save"
-        icon: "content-save"
-        icon_size: "30sp"
-        on_release: (root.on_save(), app.refresh_folder_view())
-        pos_hint: {'center_x': .85, 'center_y': .1}
-    
-    MDFillRoundFlatIconButton:
-        text: "Back"
-        icon: "backspace"
-        icon_size: "30sp"
-        on_release: root.manager.current = "main_screen"
-        pos_hint: {'center_x': .15, 'center_y': .1}
+    MDBoxLayout:
+        size_hint: (.5, 0.1)
+        pos_hint: {'center_y': 0.1, "center_x": 0.6}
+        MDBoxLayout:
+            MDFillRoundFlatIconButton:
+                text: "Back"
+                icon: "backspace"
+                icon_size: "30sp"
+                on_release: root.manager.current = "main_screen"
+                pos_hint: {"center_y": 0.5, "center_x": 0.5}
+        MDBoxLayout:
+            MDFillRoundFlatIconButton:
+                text: "Save"
+                icon: "content-save"
+                icon_size: "30sp"
+                on_release: (root.on_save(), app.refresh_folder_view())
+                pos_hint: {"center_y": 0.5, "center_x": 0.5}
 
 <EditTemplateScreen>
     name: "edit_template_screen"
@@ -236,20 +254,24 @@ ScreenManager:
             pos_hint: {"center_y": .9}
 
         MDLabel:
- 
-    MDFillRoundFlatIconButton:
-        text: "Save"
-        icon: "content-save"
-        icon_size: "30sp"
-        on_release: root.on_save()
-        pos_hint: {'center_x': .85, 'center_y': .1}
-    
-    MDFillRoundFlatIconButton:
-        text: "Back"
-        icon: "backspace"
-        icon_size: "30sp"
-        on_release: root.manager.current = "main_screen"
-        pos_hint: {'center_x': .15, 'center_y': .1}
+
+    MDBoxLayout:
+        size_hint: (.5, 0.1)
+        pos_hint: {'center_y': 0.1, "center_x": 0.6}
+        MDBoxLayout:
+            MDFillRoundFlatIconButton:
+                text: "Back"
+                icon: "backspace"
+                icon_size: "30sp"
+                on_release: root.manager.current = "main_screen"
+                pos_hint: {"center_y": 0.5, "center_x": 0.5}
+        MDBoxLayout:
+            MDFillRoundFlatIconButton:
+                text: "Save"
+                icon: "content-save"
+                icon_size: "30sp"
+                on_release: root.on_save()
+                pos_hint: {"center_y": 0.5, "center_x": 0.5}
 
 
 <CategoryInputDialog>

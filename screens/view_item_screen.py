@@ -1,23 +1,21 @@
-from screens.new_item_screen import NewItemScreen
+"""View Item Screen"""
+
+import os
+
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.textfield import MDTextField
-from utils import (
-    save_to_yaml,
-    change_screen,
-    open_yaml_file,
-)
-import os
+
+from screens.new_item_screen import NewItemScreen
+from utils import change_screen, open_yaml_file, save_to_yaml
 
 
 class ViewItemScreen(NewItemScreen):
     """Item View screen."""
 
-    def on_enter(self):
+    def on_enter(self, *args):
         """Loads the yaml file fields into UI."""
         self.ids.added_items.clear_widgets()
-
-        title_parts = self.ids.item_title.text.split("/")
-        self.ids.display_title.text = title_parts[-1]
+        self.ids.display_title.text = os.path.basename(self.ids.item_title.text)
 
         yaml_file_path = f"{self.ids.item_title.text}.yaml"
         item_dict = open_yaml_file(yaml_file_path)
@@ -28,9 +26,9 @@ class ViewItemScreen(NewItemScreen):
             adaptive_height=True,
         )
 
-        for key, val in item_dict.items():
+        for key, value in item_dict.items():
             add_field = MDTextField(helper_text=key, helper_text_mode="persistent")
-            add_field.text = val
+            add_field.text = value
             placeholder.add_widget(add_field)
 
         self.ids.added_items.add_widget(placeholder)
@@ -38,18 +36,14 @@ class ViewItemScreen(NewItemScreen):
     def on_save(self):
         """Saves the changes in the field values to the same yaml."""
         if os.path.exists(f"{self.ids.item_title.text}.yaml"):
-            all_items = self.ids.added_items
+            all_items = self.ids.added_items.children
+            mapped_values = {}
 
-            for w in all_items.children:
-                vals = [val.text for val in w.children if isinstance(val, MDTextField)]
-                labels = [
-                    val.helper_text
-                    for val in w.children
-                    if isinstance(val, MDTextField)
-                ]
-
-            mapped_values = dict(zip(labels, vals))
-            mapped_values = {k: v for k, v in reversed(mapped_values.items())}
+            for item in all_items:
+                for child in item.children:
+                    if isinstance(child, MDTextField):
+                        mapped_values[child.helper_text] = child.text
+            mapped_values = dict(reversed(mapped_values.items()))
 
             # Save as yaml
             save_to_yaml(f"{self.ids.item_title.text}.yaml", mapped_values)

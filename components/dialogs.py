@@ -1,3 +1,5 @@
+"""Custom Dialogs classes"""
+
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.dialog import MDDialog
 

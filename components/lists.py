@@ -1,10 +1,13 @@
-from utils import get_screen_element, change_screen, LIST_PATH, TEMPLATE_PATH
-from kivymd.uix.list import TwoLineAvatarIconListItem
-from kivymd.uix.button import MDRaisedButton
-from kivymd.uix.dialog import MDDialog
-from kivymd.uix.card import MDCard
-import shutil
+"""Custom Lists for Lists and Items"""
+
 import os
+import shutil
+
+from kivymd.uix.button import MDRaisedButton
+from kivymd.uix.card import MDCard
+from kivymd.uix.dialog import MDDialog
+from kivymd.uix.list import TwoLineAvatarIconListItem
+from utils import LIST_PATH, TEMPLATE_PATH, change_screen, get_screen_element
 
 
 class RoundCard(MDCard):
@@ -18,7 +21,7 @@ class RoundCard(MDCard):
 class ListOfLists(TwoLineAvatarIconListItem, RoundCard):
     """List of the user created Lists."""
 
-    def __init__(self, pk=None, **kwargs):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._txt_left_pad = 10
         self.font_style = "H5"
@@ -32,7 +35,7 @@ class ListOfLists(TwoLineAvatarIconListItem, RoundCard):
         title.title = self.text
         change_screen("items_screen")
 
-    def delete_dialog(self, list_of_lists):
+    def delete_list_dialog(self):
         """Displays delete list confirmation dialog."""
         self.dialog = MDDialog(
             text="This will remove all items under this lists.",
@@ -45,24 +48,27 @@ class ListOfLists(TwoLineAvatarIconListItem, RoundCard):
         )
         self.dialog.open()
 
-    def delete_folder(self, obj):
+    def delete_folder(self, _):
         """Deletes the list folder and all files."""
         list_name = get_screen_element("items_screen", "topbar")
         list_name.text = self.text
-        template_file = f"{TEMPLATE_PATH}{list_name.text}.yaml"
-        list_dir = f"{LIST_PATH}{list_name.text}/"
-        shutil.rmtree(list_dir)
-        os.remove(template_file)
-        self.parent.remove_widget(self)
-        self.dialog.dismiss()
+        template_file = os.path.join(TEMPLATE_PATH, f"{self.text}.yaml")
+        list_dir = os.path.join(LIST_PATH, f"{self.text}/")
+        try:
+            shutil.rmtree(list_dir)
+            os.remove(template_file)
+            self.parent.remove_widget(self)
+            self.dialog.dismiss()
+        except OSError as e:
+            MDDialog(text=f"Deletion failed: {e}").open()
 
-    def close_dialog(self, obj):
+    def close_dialog(self, _):
         """Closes the delete list confirmation dialog."""
         self.dialog.dismiss()
 
 
 class ListOfItems(TwoLineAvatarIconListItem):
-    def __init__(self, pk=None, **kwargs):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._txt_left_pad = 0
         self.font_style = "H6"
