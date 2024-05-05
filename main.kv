@@ -70,6 +70,10 @@ ScreenManager:
             halign: "center"
             right_action_items: [["eraser", lambda x: root.reset_list()],["magnify", lambda x: root.open_search_dialog()], ["dots-vertical", lambda x: root.menu_open(x)]]
             elevation: 2
+        MDBoxLayout:
+            id: sort_layout
+            size_hint_y: 0.1
+            padding: [65, 0, 0, 0]
 
         ScrollView:
             pos_hint: {'center_y': 0.5, "center_x": 0.5}

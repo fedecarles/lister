@@ -64,7 +64,7 @@ class ItemsScreen(Screen):
         menu = MDDropdownMenu(
             caller=instance,
             items=menu_items,
-            hor_growth="left",
+            hor_growth="right",
             position="bottom",
             width_mult=2,
         )
@@ -79,6 +79,8 @@ class ItemsScreen(Screen):
     def populate_list_view(self):
         """Populates the list view."""
         self.md_list = MDList()
+
+        self.ids.sort_layout.clear_widgets()
 
         sorted_files = sort_files_by_datetime(
             os.listdir(os.path.join(LIST_PATH, self.title))
@@ -101,14 +103,13 @@ class ItemsScreen(Screen):
         """Populates the table view."""
         all_dicts = []
 
-        sort_btn = MDFillRoundFlatIconButton(
-            text="Sort",
-            pos_hint={"center_x": 0.5, "center_y": 0.9},
-            icon="sort",
-            on_release=lambda x: self.sort_dropdown(x),
-        )
-
-        self.add_widget(sort_btn)
+        if not self.ids.sort_layout.children:
+            sort_btn = MDFillRoundFlatIconButton(
+                text="Sort",
+                icon="sort",
+                on_release=lambda x: self.sort_dropdown(x),
+            )
+            self.ids.sort_layout.add_widget(sort_btn)
 
         for file_path in os.listdir(os.path.join(LIST_PATH, self.title)):
             yaml_file_path = os.path.join(LIST_PATH, self.title, file_path)
@@ -123,6 +124,7 @@ class ItemsScreen(Screen):
                 row_data=row_data,
                 use_pagination=True,
                 size_hint=(1, 0.8),
+                elevation=0,
             )
             data_table.bind(on_row_press=self.on_row_press)
             self.ids.item_list.add_widget(data_table)
