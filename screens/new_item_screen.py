@@ -26,7 +26,6 @@ class NewItemScreen(Screen):
 
         def on_save(instance, value, date_range):
             text_field.text = str(value)
-            date_picker.dismiss()
 
         date_picker.bind(on_save=on_save)
         if instance:
