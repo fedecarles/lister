@@ -7,6 +7,7 @@ from kivy.uix.screenmanager import Screen
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDRaisedButton
 from kivymd.uix.menu import MDDropdownMenu
+from kivymd.uix.dropdownitem import MDDropDownItem
 from kivymd.uix.textfield import MDTextField
 
 from components.dialogs import CategoryInputDialog
@@ -40,7 +41,8 @@ class TemplateCreateScreen(Screen):
             padding=10,
         )
         field_name = MDTextField(hint_text="Field name...", id="name", mode="round")
-        field_type_btn = MDRaisedButton(text="Text", id="type_btn")
+        field_type_btn = MDDropDownItem()
+        field_type_btn.text = "Text"
         field_type_btn.bind(
             on_release=lambda _, btn=field_type_btn: self.menu_open(btn)
         )
