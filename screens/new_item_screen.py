@@ -20,15 +20,17 @@ class NewItemScreen(Screen):
         self.category_fields = []
         self.options = {}
 
-    def open_date_picker(self, text_field, *args):
+    def open_date_picker(self, text_field, instance):
         """Displays the date picker for date fields."""
         date_picker = MDDatePicker()
 
         def on_save(instance, value, date_range):
             text_field.text = str(value)
+            date_picker.dismiss()
 
         date_picker.bind(on_save=on_save)
-        date_picker.open()
+        if instance:
+            date_picker.open()
 
     def on_enter(self, *args):
         """Displays all the items inside the list."""
