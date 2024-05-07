@@ -21,8 +21,6 @@ jobs:
         pip install kivy
         pip install kivymd
         pip install pyyaml
-        pip install android.permissions
-        pip install android.storage
         pip install pillow
     - name: Analysing the code with pylint
       run: |
