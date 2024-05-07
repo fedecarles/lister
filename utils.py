@@ -7,7 +7,10 @@ import yaml
 
 from kivy.metrics import dp
 from kivy.utils import platform
+
 from kivymd.app import MDApp
+from kivymd.uix.list import MDList
+from kivymd.uix.textfield import MDTextField
 
 
 def get_screen_element(screen: str, element_id: str):
@@ -167,3 +170,23 @@ def dicts_to_table(list_of_dicts: list, sort_by: int = 0) -> tuple:
         )
 
     return header_data, row_data
+
+
+def list_items_to_dict(all_list_items: MDList) -> dict:
+    """
+    Summary:
+    Returns a dict from an MDList object.
+
+    Parameters:
+    - all_list_items (MDList): An MDList.
+
+    Returns:
+    A dict of MDList items titles.
+    """
+    mapped_values = {}
+    for item in all_list_items:
+        for child in item.children:
+            if isinstance(child, MDTextField):
+                mapped_values[child.helper_text] = child.text
+    mapped_values = dict(reversed(mapped_values.items()))
+    return mapped_values

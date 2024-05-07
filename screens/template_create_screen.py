@@ -90,7 +90,7 @@ class TemplateCreateScreen(Screen):
             )
             self.dialog.open()
 
-    def dismiss_dialog(self, instance):
+    def dismiss_dialog(self, _):
         """Closes the dialog."""
         if self.dialog:
             self.dialog.dismiss()

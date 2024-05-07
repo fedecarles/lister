@@ -6,7 +6,7 @@ from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.textfield import MDTextField
 
 from screens.new_item_screen import NewItemScreen
-from utils import change_screen, open_yaml_file, save_to_yaml
+from utils import change_screen, open_yaml_file, save_to_yaml, list_items_to_dict
 
 
 class ViewItemScreen(NewItemScreen):
@@ -37,13 +37,7 @@ class ViewItemScreen(NewItemScreen):
         """Saves the changes in the field values to the same yaml."""
         if os.path.exists(f"{self.ids.item_title.text}.yaml"):
             all_items = self.ids.added_items.children
-            mapped_values = {}
-
-            for item in all_items:
-                for child in item.children:
-                    if isinstance(child, MDTextField):
-                        mapped_values[child.helper_text] = child.text
-            mapped_values = dict(reversed(mapped_values.items()))
+            mapped_values = list_items_to_dict(all_items)
 
             # Save as yaml
             save_to_yaml(f"{self.ids.item_title.text}.yaml", mapped_values)

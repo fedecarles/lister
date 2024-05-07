@@ -10,7 +10,14 @@ from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.pickers import MDDatePicker
 from kivymd.uix.textfield import MDTextField
 
-from utils import LIST_PATH, TEMPLATE_PATH, change_screen, open_yaml_file, save_to_yaml
+from utils import (
+    LIST_PATH,
+    TEMPLATE_PATH,
+    change_screen,
+    open_yaml_file,
+    save_to_yaml,
+    list_items_to_dict,
+)
 
 
 class NewItemScreen(Screen):
@@ -100,14 +107,9 @@ class NewItemScreen(Screen):
 
     def on_save(self):
         """Saves the item as a yaml file"""
-        mapped_values = {}
         all_items = self.ids.added_items.children
 
-        for item in all_items:
-            for child in item.children:
-                if isinstance(child, MDTextField):
-                    mapped_values[child.helper_text] = child.text
-        mapped_values = dict(reversed(mapped_values.items()))
+        mapped_values = list_items_to_dict(all_items)
 
         # some error handling
         if not list(mapped_values.values())[0]:
