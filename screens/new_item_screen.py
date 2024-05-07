@@ -3,6 +3,7 @@
 from datetime import datetime
 
 from kivy.uix.screenmanager import Screen
+
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.dialog.dialog import MDDialog
 from kivymd.uix.menu import MDDropdownMenu
@@ -24,7 +25,7 @@ class NewItemScreen(Screen):
         """Displays the date picker for date fields."""
         date_picker = MDDatePicker()
 
-        def on_save(instance, value, date_range):
+        def on_save(_instance, value, _date_range):
             text_field.text = str(value)
 
         date_picker.bind(on_save=on_save)

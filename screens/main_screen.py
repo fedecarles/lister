@@ -2,12 +2,12 @@
 
 import os
 
+from kivy.uix.screenmanager import Screen
+
 from kivymd.app import MDApp
 from kivymd.uix.dialog import MDDialog
-from kivy.uix.screenmanager import Screen
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.button import MDRaisedButton
-from kivymd.uix.button import MDIconButton
 
 from components.lists import ListOfLists
 from components.dialogs import SearchDialog
@@ -44,7 +44,7 @@ class MainScreen(Screen):
         )
         menu.open()
 
-    def change_theme(self, instance, theme):
+    def change_theme(self, _, theme):
         """Sets the app theme."""
         app = MDApp.get_running_app()
         app.theme_cls.theme_style = theme

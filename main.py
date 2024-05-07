@@ -3,8 +3,8 @@
 import os
 
 from kivymd.app import MDApp
+
 from kivy.utils import platform
-from kivymd.uix.dialog import MDDialog
 from kivy.uix.screenmanager import ScreenManager
 
 from components.lists import ListOfLists

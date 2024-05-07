@@ -1,8 +1,9 @@
 """Helper and utility functions."""
 
 import os
-import yaml
 from datetime import datetime
+
+import yaml
 
 from kivy.metrics import dp
 from kivy.utils import platform
@@ -57,6 +58,8 @@ ASSETS_PATH = os.path.join("assets/")
 
 
 def sort_files_by_datetime(file_paths):
+    """Sort the yaml files by date suffix."""
+
     def extract_datetime(file_path):
         filename = os.path.basename(file_path)
         date_string = filename.split("_")[-1].split(".")[0]
@@ -78,7 +81,7 @@ def open_yaml_file(path: str) -> dict:
     Returns:
     A python dict.
     """
-    with open(path) as file:
+    with open(path, encoding="utf-8") as file:
         return yaml.safe_load(file)
 
 
@@ -148,7 +151,7 @@ def dicts_to_table(list_of_dicts: list, sort_by: int = 0) -> tuple[list, list]:
     # Convert the dictionary to MDDataTable header/row formats.
     list_length = len(next(iter(all_dicts.values())))
     for i in range(list_length):
-        tuple_data = tuple(all_dicts[key][i] for key in all_dicts)
+        tuple_data = tuple(value[i] for _key, value in all_dicts.items())
         row_data.append(tuple_data)
 
     dps = [max(dps) for dps in zip(*dps_all)]
@@ -159,7 +162,7 @@ def dicts_to_table(list_of_dicts: list, sort_by: int = 0) -> tuple[list, list]:
     # Sort the dictionary
     if sort_by is not None:
         row_data = sorted(
-            zip(*[all_dicts[col] for col in all_dicts.keys()]),
+            zip(*[values for values in all_dicts.values()]),
             key=lambda x: x[sort_by],
         )
 

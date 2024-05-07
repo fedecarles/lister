@@ -11,6 +11,8 @@ from utils import LIST_PATH, TEMPLATE_PATH, change_screen, get_screen_element
 
 
 class RoundCard(MDCard):
+    """Round car for list items view."""
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.radius = [
@@ -68,6 +70,8 @@ class ListOfLists(TwoLineAvatarIconListItem, RoundCard):
 
 
 class ListOfItems(TwoLineAvatarIconListItem):
+    """List of user created items."""
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._txt_left_pad = 0

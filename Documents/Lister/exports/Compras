@@ -1,6 +1,11 @@
 Pord,Cant,Cat,File
-Bananas,5,B,./Documents/Lister/lists/Compras/Compras_2024-04-28 125917.yaml
-Peras,7,C,./Documents/Lister/lists/Compras/Compras_2024-04-28 143322.yaml
-Sandia,4,Cat1,./Documents/Lister/lists/Compras/Compras_2024-05-04 103929.yaml
-Anana,2,A,./Documents/Lister/lists/Compras/Compras_2024-04-29 180806.yaml
-Atun,1,Cat2,./Documents/Lister/lists/Compras/Compras_2024-05-04 103350.yaml
+Atun2,1,Cat2,./Documents/Lister/lists/Compras/Compras_2024-05-04 162935.yaml
+Atun4,a,Cat2,./Documents/Lister/lists/Compras/Compras_2024-05-04 163913.yaml
+Pollo2,a,Cat2,./Documents/Lister/lists/Compras/Compras_2024-05-04 164032.yaml
+Carne,1,Cat1,./Documents/Lister/lists/Compras/Compras_2024-05-04 162911.yaml
+Pollo,1,Cat2,./Documents/Lister/lists/Compras/Compras_2024-05-04 163026.yaml
+Atun3,1,Cat2,./Documents/Lister/lists/Compras/Compras_2024-05-04 162946.yaml
+Sandia,4,Sandia,./Documents/Lister/lists/Compras/Compras_2024-05-04 103929.yaml
+Ambos,1,Cat1,./Documents/Lister/lists/Compras/Compras_2024-05-04 162743.yaml
+Pollor,2,Cat2,./Documents/Lister/lists/Compras/Compras_2024-05-04 164045.yaml
+Atun,3,Cat2,./Documents/Lister/lists/Compras/Compras_2024-05-04 103350.yaml

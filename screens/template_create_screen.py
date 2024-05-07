@@ -2,8 +2,9 @@
 
 import os
 
-from kivymd.uix.dialog import MDDialog
 from kivy.uix.screenmanager import Screen
+
+from kivymd.uix.dialog import MDDialog
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDRaisedButton
 from kivymd.uix.menu import MDDropdownMenu

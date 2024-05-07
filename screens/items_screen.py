@@ -3,9 +3,10 @@
 import csv
 import os
 
+from kivy.uix.screenmanager import Screen
+
 from kivymd.uix.list import MDList
 from kivymd.uix.dialog import MDDialog
-from kivy.uix.screenmanager import Screen
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.button import MDRaisedButton
 from kivymd.uix.button import MDFillRoundFlatIconButton
@@ -36,7 +37,7 @@ class ItemsScreen(Screen):
         self.md_list = None
         self.dialog = None
 
-    def on_enter(self):
+    def on_enter(self, *args):
         """Populates the list Items."""
         self.title = self.ids.topbar.title
         self.refresh_view()
@@ -107,7 +108,7 @@ class ItemsScreen(Screen):
             sort_btn = MDFillRoundFlatIconButton(
                 text="Sort",
                 icon="sort",
-                on_release=lambda x: self.sort_dropdown(x),
+                on_release=self.sort_dropdown,
             )
             self.ids.sort_layout.add_widget(sort_btn)
 
@@ -178,7 +179,7 @@ class ItemsScreen(Screen):
 
         # find the dict item with most amount of fields.
         # this is in case the users manually adds a new field to the template.
-        dict_most_keys = max(data, key=lambda x: len(x))
+        dict_most_keys = max(data, key=len)
         fieldnames = dict_most_keys.keys()
 
         try:
