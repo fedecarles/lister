@@ -116,8 +116,9 @@ class NewItemScreen(Screen):
 
         # Save as yaml. Use timestamp as suffix for the filenames.
         try:
+            title = self.ids.item_title.text
             new_date = datetime.now().strftime("%Y-%m-%d %H%M%S")
-            yaml_file_path = f"{LIST_PATH}{self.ids.item_title.text}/{self.ids.item_title.text}_{new_date}.yaml"
+            yaml_file_path = f"{LIST_PATH}{title}/{title}_{new_date}.yaml"
             save_to_yaml(yaml_file_path, mapped_values)
             change_screen("items_screen")
         except OSError as e:

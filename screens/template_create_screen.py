@@ -90,7 +90,7 @@ class TemplateCreateScreen(Screen):
             )
             self.dialog.open()
 
-    def dismiss_dialog(self, *args):
+    def dismiss_dialog(self, instance):
         """Closes the dialog."""
         if self.dialog:
             self.dialog.dismiss()
@@ -99,7 +99,7 @@ class TemplateCreateScreen(Screen):
         """Sets the categories as the button value."""
         categories = self.dialog.content_cls.ids.categories.text
         caller_btn.text = f"[{categories}]"
-        self.dismiss_dialog()
+        self.dismiss_dialog(caller_btn)
 
     def on_save(self):
         """Saves the template to a yaml file."""

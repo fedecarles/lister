@@ -117,7 +117,7 @@ def get_folder_list(folder: str) -> list:
     return list(os.listdir(folder))
 
 
-def dicts_to_table(list_of_dicts: list, sort_by: int = 0) -> tuple[list, list]:
+def dicts_to_table(list_of_dicts: list, sort_by: int = 0) -> tuple:
     """
     Summary:
     Converts the list of dicts from yaml files into row and column data
@@ -162,7 +162,7 @@ def dicts_to_table(list_of_dicts: list, sort_by: int = 0) -> tuple[list, list]:
     # Sort the dictionary
     if sort_by is not None:
         row_data = sorted(
-            zip(*[values for values in all_dicts.values()]),
+            zip(*list(all_dicts.values())),
             key=lambda x: x[sort_by],
         )
 
