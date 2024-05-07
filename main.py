@@ -4,6 +4,7 @@ import os
 
 from kivymd.app import MDApp
 from kivy.utils import platform
+from kivymd.uix.dialog import MDDialog
 from kivy.uix.screenmanager import ScreenManager
 
 from components.lists import ListOfLists
@@ -14,6 +15,7 @@ from screens.view_item_screen import ViewItemScreen
 from screens.edit_template_screen import EditTemplateScreen
 from screens.template_create_screen import TemplateCreateScreen
 from utils import (
+    DOCUMENTS_PATH,
     EXPORTS_PATH,
     LIST_PATH,
     TEMPLATE_PATH,
@@ -34,13 +36,14 @@ class MainApp(MDApp):
 
     def on_start(self):
         """Populate the List of Lists."""
-        self.folder_list = get_folder_list(LIST_PATH)
-        all_lists = os.listdir(LIST_PATH)
-        main_screen = self.root.get_screen("main_screen")
+        if os.path.exists(LIST_PATH):
+            self.folder_list = get_folder_list(LIST_PATH)
+            all_lists = os.listdir(LIST_PATH)
+            main_screen = self.root.get_screen("main_screen")
 
-        for list_item in all_lists:
-            add_list = ListOfLists(text=list_item)
-            main_screen.ids.container.add_widget(add_list)
+            for list_item in all_lists:
+                add_list = ListOfLists(text=list_item)
+                main_screen.ids.container.add_widget(add_list)
 
     def refresh_folder_view(self):
         """Updates the display to show the current list of folders."""
@@ -62,7 +65,6 @@ class MainApp(MDApp):
         """Creates the initial lists and templates folders."""
         if platform == "android":
             from android.permissions import Permission, request_permissions
-            from android.storage import primary_external_storage_path
 
             request_permissions(
                 [
@@ -70,14 +72,24 @@ class MainApp(MDApp):
                     Permission.READ_EXTERNAL_STORAGE,
                     Permission.WRITE_EXTERNAL_STORAGE,
                 ],
+                self.on_request_permissions_done,
             )
+        else:
+            os.makedirs(LIST_PATH, exist_ok=True)
+            os.makedirs(TEMPLATE_PATH, exist_ok=True)
+            os.makedirs(EXPORTS_PATH, exist_ok=True)
+
+    def on_request_permissions_done(self, _permissions, grant_results):
+        """Create folders on permissions granted."""
+        if all(grant_results):
+            from android.storage import primary_external_storage_path
 
             # Get the app's internal storage directory
             # app_dir = self.user_data_dir
             app_dir = primary_external_storage_path()
 
             # Create the 'Lister' directory if it doesn't exist
-            lister_dir = os.path.join(app_dir, "Documents/Lister")
+            lister_dir = os.path.join(app_dir, DOCUMENTS_PATH)
             if not os.path.exists(lister_dir):
                 os.makedirs(lister_dir)
 
@@ -87,16 +99,14 @@ class MainApp(MDApp):
                 folder_path = os.path.join(lister_dir, folder)
                 os.makedirs(folder_path, exist_ok=True)
         else:
-            os.makedirs(LIST_PATH, exist_ok=True)
-            os.makedirs(TEMPLATE_PATH, exist_ok=True)
-            os.makedirs(EXPORTS_PATH, exist_ok=True)
+            self.stop()
 
     def build(self):
         """Build app theme and screens"""
+        self.create_dirs()
         self.theme_cls.theme_style = CONFIG["theme"]
         self.theme_cls.primary_palette = "DeepPurple"
         self.theme_cls.primary_hue = "200"
-        self.create_dirs()
 
         sm = ScreenManager()
         sm.add_widget(MainScreen(name="main_screen"))
