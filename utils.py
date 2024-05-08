@@ -3,6 +3,7 @@
 import os
 from datetime import datetime
 
+from kivymd.uix.dialog import MDDialog
 import yaml
 
 from kivy.metrics import dp
@@ -10,9 +11,24 @@ from kivy.utils import platform
 
 from kivymd.app import MDApp
 from kivymd.uix.list import MDList
+from kivymd.uix.button import MDRaisedButton
 from kivymd.uix.textfield import MDTextField
 
+# File storage paths
+if platform == "android":
+    from android.storage import primary_external_storage_path
 
+    STORAGE_PATH = primary_external_storage_path()
+else:
+    STORAGE_PATH = "."
+DOCUMENTS_PATH = os.path.join(STORAGE_PATH, "Documents/Lister")
+LIST_PATH = os.path.join(DOCUMENTS_PATH, "lists/")
+TEMPLATE_PATH = os.path.join(DOCUMENTS_PATH, "templates/")
+EXPORTS_PATH = os.path.join(DOCUMENTS_PATH, "exports/")
+ASSETS_PATH = os.path.join("assets/")
+
+
+# Screen operations
 def get_screen_element(screen: str, element_id: str):
     """
     Summary:
@@ -46,20 +62,7 @@ def change_screen(screen: str) -> None:
     app.root.current = screen
 
 
-# File storage paths
-if platform == "android":
-    from android.storage import primary_external_storage_path
-
-    STORAGE_PATH = primary_external_storage_path()
-else:
-    STORAGE_PATH = "."
-DOCUMENTS_PATH = os.path.join(STORAGE_PATH, "Documents/Lister")
-LIST_PATH = os.path.join(DOCUMENTS_PATH, "lists/")
-TEMPLATE_PATH = os.path.join(DOCUMENTS_PATH, "templates/")
-EXPORTS_PATH = os.path.join(DOCUMENTS_PATH, "exports/")
-ASSETS_PATH = os.path.join("assets/")
-
-
+# yaml files operations
 def sort_files_by_datetime(file_paths):
     """Sort the yaml files by date suffix."""
 
@@ -72,7 +75,6 @@ def sort_files_by_datetime(file_paths):
     return sorted_file_paths
 
 
-# yaml operations
 def open_yaml_file(path: str) -> dict:
     """
     Summary:
@@ -105,7 +107,6 @@ def save_to_yaml(path, my_dict) -> None:
         print(f"YAML item '{path}' has been created successfully.")
 
 
-# File operations
 def get_folder_list(folder: str) -> list:
     """
     Summary:
@@ -190,3 +191,27 @@ def list_items_to_dict(all_list_items: MDList) -> dict:
                 mapped_values[child.helper_text] = child.text
     mapped_values = dict(reversed(mapped_values.items()))
     return mapped_values
+
+
+# Dialog operations
+def create_dialog(content, cancel_fn, callback_fn) -> MDDialog:
+    """
+    Summary:
+    Returns an MDDialog/
+
+    Parameters:
+    - content (custom): A custom Dialog class.
+    - cancel_fn (fn): A close dialog function.
+    - callback_fn (fn): A callback function.
+
+    Returns:
+    An MDDialog
+    """
+    return MDDialog(
+        type="custom",
+        content_cls=content,
+        buttons=[
+            MDRaisedButton(text="Cancel", md_bg_color="red", on_release=cancel_fn),
+            MDRaisedButton(text="Search", on_release=callback_fn),
+        ],
+    )

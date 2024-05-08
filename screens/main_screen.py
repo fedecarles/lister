@@ -11,7 +11,7 @@ from kivymd.uix.button import MDRaisedButton
 
 from components.lists import ListOfLists
 from components.dialogs import SearchDialog
-from utils import LIST_PATH, ASSETS_PATH, get_folder_list, save_to_yaml
+from utils import LIST_PATH, ASSETS_PATH, get_folder_list, save_to_yaml, create_dialog
 
 
 class MainScreen(Screen):
@@ -74,15 +74,8 @@ class MainScreen(Screen):
 
             self.dismiss_dialog(_)
 
-        self.dialog = MDDialog(
-            type="custom",
-            content_cls=SearchDialog(),
-            buttons=[
-                MDRaisedButton(
-                    text="Cancel", md_bg_color="red", on_release=self.dismiss_dialog
-                ),
-                MDRaisedButton(text="Search", on_release=search_callback),
-            ],
+        self.dialog = create_dialog(
+            SearchDialog(), self.dismiss_dialog, search_callback
         )
         self.dialog.open()
 

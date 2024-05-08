@@ -22,6 +22,7 @@ from utils import (
     get_screen_element,
     open_yaml_file,
     sort_files_by_datetime,
+    create_dialog,
 )
 
 
@@ -227,19 +228,13 @@ class ItemsScreen(Screen):
 
             self.dismiss_dialog(_)
 
-        self.dialog = MDDialog(
-            type="custom",
-            content_cls=SearchDialog(),
-            buttons=[
-                MDRaisedButton(
-                    text="Cancel", md_bg_color="red", on_release=self.dismiss_dialog
-                ),
-                MDRaisedButton(text="Search", on_release=search_callback),
-            ],
+        self.dialog = create_dialog(
+            SearchDialog(), self.dismiss_dialog, search_callback
         )
         self.dialog.open()
 
     def dismiss_dialog(self, _):
+        """Closes dialog."""
         if self.dialog:
             self.dialog.dismiss()
 
