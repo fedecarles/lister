@@ -14,6 +14,8 @@ from kivymd.uix.list import MDList
 from kivymd.uix.button import MDRaisedButton
 from kivymd.uix.textfield import MDTextField
 
+from components.dialogs import SearchDialog
+
 # File storage paths
 if platform == "android":
     from android.storage import primary_external_storage_path

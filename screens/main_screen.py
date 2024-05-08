@@ -5,9 +5,7 @@ import os
 from kivy.uix.screenmanager import Screen
 
 from kivymd.app import MDApp
-from kivymd.uix.dialog import MDDialog
 from kivymd.uix.menu import MDDropdownMenu
-from kivymd.uix.button import MDRaisedButton
 
 from components.lists import ListOfLists
 from components.dialogs import SearchDialog
@@ -17,7 +15,6 @@ from utils import (
     get_folder_list,
     save_to_yaml,
     create_dialog,
-    dismiss_dialog,
 )
 
 
@@ -62,17 +59,14 @@ class MainScreen(Screen):
         theme_config = {"theme": theme}
         save_to_yaml(os.path.join(ASSETS_PATH, "config.yaml"), theme_config)
 
-    def open_search_dialog(self):
+    def open_search_dialog(self):  # pylint: disable=R0801
         """Opens the search dialog."""
 
         def search_callback(_):
             search_text = self.dialog.content_cls.ids.search_field.text
-
-            item_list = self.ids.container
-            search_results = []
-            for item in item_list.children:
-                if search_text in item.text:
-                    search_results.append(item)
+            search_results = [
+                item for item in self.ids.container.children if search_text in item.text
+            ]
 
             if search_results:
                 self.ids.container.clear_widgets()
@@ -86,8 +80,8 @@ class MainScreen(Screen):
         )
         self.dialog.open()
 
-    def dismiss_dialog(self, _):
-        """Closes main search dialog."""
+    def dismiss_dialog(self, _):  # pylint: disable=R0801
+        """Closes dialog."""
         if self.dialog:
             self.dialog.dismiss()
 

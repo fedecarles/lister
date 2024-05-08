@@ -8,9 +8,8 @@ from kivy.uix.screenmanager import Screen
 from kivymd.uix.list import MDList
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.menu import MDDropdownMenu
-from kivymd.uix.button import MDRaisedButton
-from kivymd.uix.button import MDFillRoundFlatIconButton
 from kivymd.uix.datatables import MDDataTable
+from kivymd.uix.button import MDFillRoundFlatIconButton
 
 from components.lists import ListOfItems
 from components.dialogs import SearchDialog
@@ -234,7 +233,7 @@ class ItemsScreen(Screen):
         self.dialog.open()
 
     def dismiss_dialog(self, _):
-        """Closes item search dialog."""
+        """Closes dialog."""
         if self.dialog:
             self.dialog.dismiss()
 
