@@ -59,7 +59,8 @@ class MainScreen(Screen):
         theme_config = {"theme": theme}
         save_to_yaml(os.path.join(ASSETS_PATH, "config.yaml"), theme_config)
 
-    def open_search_dialog(self):  # pylint: disable=R0801
+    # pylint: disable=R0801
+    def open_search_dialog(self):
         """Opens the search dialog."""
 
         def search_callback(_):
@@ -80,7 +81,8 @@ class MainScreen(Screen):
         )
         self.dialog.open()
 
-    def dismiss_dialog(self, _):  # pylint: disable=R0801
+    # pylint: disable=R0801
+    def dismiss_dialog(self, _):
         """Closes dialog."""
         if self.dialog:
             self.dialog.dismiss()

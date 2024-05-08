@@ -3,7 +3,6 @@
 import os
 from datetime import datetime
 
-from kivymd.uix.dialog import MDDialog
 import yaml
 
 from kivy.metrics import dp
@@ -11,10 +10,10 @@ from kivy.utils import platform
 
 from kivymd.app import MDApp
 from kivymd.uix.list import MDList
+from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDRaisedButton
 from kivymd.uix.textfield import MDTextField
 
-from components.dialogs import SearchDialog
 
 # File storage paths
 if platform == "android":

@@ -207,6 +207,7 @@ class ItemsScreen(Screen):
         get_screen_element("new_item_screen", "item_title").text = item
         change_screen("new_item_screen")
 
+    # pylint: disable=R0801
     def open_search_dialog(self):
         """Opens the search dialog."""
 
@@ -232,6 +233,7 @@ class ItemsScreen(Screen):
         )
         self.dialog.open()
 
+    # pylint: disable=R0801
     def dismiss_dialog(self, _):
         """Closes dialog."""
         if self.dialog:
