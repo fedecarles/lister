@@ -64,6 +64,8 @@ class MainApp(MDApp):
     def create_dirs(self):
         """Creates the initial lists and templates folders."""
         if platform == "android":
+            # pylint: disable=E0401
+            # pylint: disable=C0415
             from android.permissions import Permission, request_permissions
 
             request_permissions(
@@ -82,6 +84,8 @@ class MainApp(MDApp):
     def on_request_permissions_done(self, _permissions, grant_results):
         """Create folders on permissions granted."""
         if all(grant_results):
+            # pylint: disable=E0401
+            # pylint: disable=C0415
             from android.storage import primary_external_storage_path
 
             # Get the app's internal storage directory

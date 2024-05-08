@@ -10,6 +10,7 @@ from kivymd.uix.list import TwoLineAvatarIconListItem
 from utils import LIST_PATH, TEMPLATE_PATH, change_screen, get_screen_element
 
 
+# pylint: disable=R0901
 class RoundCard(MDCard):
     """Round car for list items view."""
 
@@ -20,6 +21,7 @@ class RoundCard(MDCard):
         ]
 
 
+# pylint: disable=R0901
 class ListOfLists(TwoLineAvatarIconListItem, RoundCard):
     """List of the user created Lists."""
 
@@ -69,6 +71,7 @@ class ListOfLists(TwoLineAvatarIconListItem, RoundCard):
         self.dialog.dismiss()
 
 
+# pylint: disable=R0901
 class ListOfItems(TwoLineAvatarIconListItem):
     """List of user created items."""
 

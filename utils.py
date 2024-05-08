@@ -17,6 +17,8 @@ from kivymd.uix.textfield import MDTextField
 
 # File storage paths
 if platform == "android":
+    # pylint: disable=E0401
+    # pylint: disable=C0415
     from android.storage import primary_external_storage_path
 
     STORAGE_PATH = primary_external_storage_path()
