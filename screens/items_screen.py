@@ -234,7 +234,7 @@ class ItemsScreen(Screen):
         self.dialog.open()
 
     def dismiss_dialog(self, _):
-        """Closes dialog."""
+        """Closes item search dialog."""
         if self.dialog:
             self.dialog.dismiss()
 

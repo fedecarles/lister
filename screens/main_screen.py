@@ -11,7 +11,14 @@ from kivymd.uix.button import MDRaisedButton
 
 from components.lists import ListOfLists
 from components.dialogs import SearchDialog
-from utils import LIST_PATH, ASSETS_PATH, get_folder_list, save_to_yaml, create_dialog
+from utils import (
+    LIST_PATH,
+    ASSETS_PATH,
+    get_folder_list,
+    save_to_yaml,
+    create_dialog,
+    dismiss_dialog,
+)
 
 
 class MainScreen(Screen):
@@ -80,7 +87,7 @@ class MainScreen(Screen):
         self.dialog.open()
 
     def dismiss_dialog(self, _):
-        """Closes dialog."""
+        """Closes main search dialog."""
         if self.dialog:
             self.dialog.dismiss()
 
