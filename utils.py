@@ -138,13 +138,10 @@ def dicts_to_table(list_of_dicts: list, sort_by: int = 0) -> tuple:
     A tuple with the header and row data for the MDDataTable.
     """
 
-    dps_all = []
     header_data = []
-    row_data = []
-    for d in list_of_dicts:
-        # calculate dp size
-        dps_row = [max(20, len(col * 2)) for col in d.values()]
-        dps_all.append(dps_row)
+
+    dps_all = [[max(20, len(col * 2)) for col in d.values()] for d in list_of_dicts]
+    dps = [max(dps) for dps in zip(*dps_all)]
 
     # For sorting purposes, convert the list of dicts to a
     # single dict where the data columns are a key.
@@ -156,11 +153,7 @@ def dicts_to_table(list_of_dicts: list, sort_by: int = 0) -> tuple:
         tuple(value[i] for key, value in all_dicts.items())
         for i in range(len(next(iter(all_dicts.values()))))
     ]
-
-    dps = [max(dps) for dps in zip(*dps_all)]
-
-    for index, d in enumerate(all_dicts.keys()):
-        header_data.append((d, dp(dps[index])))
+    header_data = [(key, dp(dps[index])) for index, key in enumerate(all_dicts.keys())]
 
     # Sort the dictionary
     if sort_by is not None:
