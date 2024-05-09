@@ -66,6 +66,7 @@ class NewItemScreen(Screen):
             helper_text=field_name,
             helper_text_mode="persistent",
             icon_right="note-text-outline",
+            input_type="text",
         )
 
         # for numeric fields, setl input type for numeric keyboard.

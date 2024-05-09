@@ -41,7 +41,12 @@ class TemplateCreateScreen(Screen):
             adaptive_height=True,
             padding=10,
         )
-        field_name = MDTextField(hint_text="Field name...", id="name", mode="round")
+        field_name = MDTextField(
+            hint_text="Field name...",
+            id="name",
+            mode="round",
+            input_type="text",
+        )
         field_type_btn = MDDropDownItem()
         field_type_btn.text = "Text"
         field_type_btn.bind(
