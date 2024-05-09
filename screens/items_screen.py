@@ -51,7 +51,7 @@ class ItemsScreen(Screen):
             self.populate_table_view()
 
     def sort_dropdown(self, instance):
-        """Creats the sort button dropdown values."""
+        """Creates the sort button dropdown values."""
         menu_items = [
             {
                 "text": f"{col}",
@@ -96,8 +96,6 @@ class ItemsScreen(Screen):
                 secondary_font_style="Icon",
             )
             self.md_list.add_widget(item_row, index=0)
-            if not self.columns:
-                self.columns = fl.keys()
         self.ids.item_list.add_widget(self.md_list, index=0)
 
     def populate_table_view(self):
@@ -117,6 +115,10 @@ class ItemsScreen(Screen):
             fl = open_yaml_file(yaml_file_path)
             fl["File"] = yaml_file_path
             all_dicts.append(fl)
+
+        sort_cols = fl.copy()
+        sort_cols.pop("File")
+        self.columns = sort_cols.keys()
 
         try:
             header_data, row_data = dicts_to_table(all_dicts, self.sort_by)
