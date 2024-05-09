@@ -123,8 +123,7 @@ class ItemsScreen(Screen):
             data_table = MDDataTable(
                 column_data=header_data,
                 row_data=row_data,
-                use_pagination=True,
-                size_hint=(1, 0.8),
+                rows_num=1000000,  # set high limit on rows diplayed
                 elevation=0,
             )
             data_table.bind(on_row_press=self.on_row_press)
