@@ -113,5 +113,8 @@ class ListOfItems(TwoLineAvatarIconListItem):
         if not os.path.exists(destination_path):
             os.makedirs(destination_path)
 
-        shutil.move(source_file, destination_path)
-        self.parent.remove_widget(list_of_items)
+        try:
+            shutil.move(source_file, destination_path)
+            self.parent.remove_widget(list_of_items)
+        except OSError as e:
+            MDDialog(text="File could not be moved: {e}")
