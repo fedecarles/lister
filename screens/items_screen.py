@@ -257,7 +257,7 @@ class ItemsScreen(Screen):
             return
 
         self.ids.item_list.remove_widget(self.md_list)
-        self.populate_list_view()
+        self.populate_list_view(LIST_PATH)
 
     def go_to_edit_template(self):
         """Displays the edit template view."""
