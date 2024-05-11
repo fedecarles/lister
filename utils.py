@@ -29,6 +29,7 @@ LIST_PATH = os.path.join(DOCUMENTS_PATH, "lists/")
 TEMPLATE_PATH = os.path.join(DOCUMENTS_PATH, "templates/")
 EXPORTS_PATH = os.path.join(DOCUMENTS_PATH, "exports/")
 ASSETS_PATH = os.path.join("assets/")
+ARCHIVES_PATH = os.path.join(DOCUMENTS_PATH, "archives/")
 
 
 # Screen operations

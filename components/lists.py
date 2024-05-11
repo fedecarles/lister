@@ -3,11 +3,17 @@
 import os
 import shutil
 
-from kivymd.uix.button import MDRaisedButton
 from kivymd.uix.card import MDCard
 from kivymd.uix.dialog import MDDialog
+from kivymd.uix.button import MDRaisedButton
 from kivymd.uix.list import TwoLineAvatarIconListItem
-from utils import LIST_PATH, TEMPLATE_PATH, change_screen, get_screen_element
+from utils import (
+    LIST_PATH,
+    TEMPLATE_PATH,
+    ARCHIVES_PATH,
+    change_screen,
+    get_screen_element,
+)
 
 
 # pylint: disable=R0901
@@ -89,4 +95,23 @@ class ListOfItems(TwoLineAvatarIconListItem):
     def delete_item(self, list_of_items):
         """Deletes the item yaml file."""
         os.remove(f"{self.secondary_text}")
+        self.parent.remove_widget(list_of_items)
+
+    def archive_item(self, list_of_items):
+        """Moves item to archives."""
+
+        list_name = get_screen_element("items_screen", "topbar").title
+        source_file = os.path.join(self.secondary_text)
+        destination_path = ""
+
+        file = os.path.basename(source_file)
+        if os.path.exists(os.path.join(ARCHIVES_PATH, list_name, file)):
+            destination_path = os.path.join(LIST_PATH, list_name)
+        elif os.path.exists(os.path.join(LIST_PATH, list_name, file)):
+            destination_path = os.path.join(ARCHIVES_PATH, list_name)
+
+        if not os.path.exists(destination_path):
+            os.makedirs(destination_path)
+
+        shutil.move(source_file, destination_path)
         self.parent.remove_widget(list_of_items)

@@ -16,6 +16,7 @@ from components.dialogs import SearchDialog
 from utils import (
     EXPORTS_PATH,
     LIST_PATH,
+    ARCHIVES_PATH,
     change_screen,
     dicts_to_table,
     get_screen_element,
@@ -46,9 +47,12 @@ class ItemsScreen(Screen):
         """Refreshes the view based on the selected mode."""
         self.ids.item_list.clear_widgets()
         if self.view == "list":
-            self.populate_list_view()
+            self.populate_list_view(LIST_PATH)
         elif self.view == "table":
             self.populate_table_view()
+        elif self.view == "archive":
+            self.ids.topbar.title = f"{self.ids.topbar.title} - Archive"
+            self.populate_list_view(ARCHIVES_PATH)
 
     def sort_dropdown(self, instance):
         """Creates the sort button dropdown values."""
@@ -77,17 +81,17 @@ class ItemsScreen(Screen):
         self.sort_by = index
         self.refresh_view()
 
-    def populate_list_view(self):
+    def populate_list_view(self, source: str):
         """Populates the list view."""
         self.md_list = MDList()
 
         self.ids.sort_layout.clear_widgets()
 
         sorted_files = sort_files_by_datetime(
-            os.listdir(os.path.join(LIST_PATH, self.title))
+            os.listdir(os.path.join(source, self.title))
         )
         for file_path in sorted_files:
-            yaml_file_path = os.path.join(LIST_PATH, self.title, file_path)
+            yaml_file_path = os.path.join(source, self.title, file_path)
             fl = open_yaml_file(yaml_file_path)
             first_field = next(iter(fl))
             item_row = ListOfItems(
@@ -147,7 +151,7 @@ class ItemsScreen(Screen):
                 "on_release": lambda x="table": self.update_view(topbar, x),
             },
             {
-                "text": "Export",
+                "text": "Export Data",
                 "viewclass": "OneLineListItem",
                 "on_release": lambda _="export": self.export_data(self.title),
             },
@@ -155,6 +159,11 @@ class ItemsScreen(Screen):
                 "text": "Edit Template",
                 "viewclass": "OneLineListItem",
                 "on_release": lambda _="edit": self.go_to_edit_template(),
+            },
+            {
+                "text": "Archive",
+                "viewclass": "OneLineListItem",
+                "on_release": lambda x="archive": self.update_view(topbar, x),
             },
         ]
         menu = MDDropdownMenu(

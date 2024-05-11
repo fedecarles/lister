@@ -48,15 +48,26 @@ ScreenManager:
         text_color: 1, 0, 0, 1
         on_release: (root.delete_list_dialog(), app.refresh_folder_view())
 
+
 <ListOfItems>
     id: list_of_items
     markup: True
 
-    IconRightWidget:
-        icon: "trash-can-outline"
-        theme_text_color: "Custom"
-        text_color: 1, 0, 0, 1
-        on_release: (root.delete_item(list_of_items), app.refresh_folder_view())
+    MDBoxLayout:
+        pos_hint: {"x": 0.85, "center_y": 0.5}
+        MDIconButton:
+            pos_hint: {"center_x": 1, "center_y": 0.5}
+            icon: "trash-can-outline"
+            theme_text_color: "Custom"
+            text_color: 1, 0, 0, 1
+            on_release: (root.delete_item(list_of_items), app.refresh_folder_view())
+
+        MDIconButton:
+            pos_hint: {"center_x": 1, "center_y": 0.5}
+            icon: "archive-outline"
+            theme_text_color: "Custom"
+            text_color: 50, 50, 0, 1
+            on_release: (root.archive_item(list_of_items), app.refresh_folder_view())
 
 <ItemsScreen>
     name: "items_screen"
