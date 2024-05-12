@@ -6,6 +6,10 @@ Whether it's managing to-dos, organizing groceries, planning meals,
 or any other list-oriented task, Lister offers a flexible and
 intuitive platform for users to streamline their planning process.
 
+Lister is the best way to keep all your list-oriented notes in a same place. 
+Manage your to-do tasks, your grocery shopping list, or just write down notes 
+or keep a track of those restaurants you want to try.
+
 ## Features
 - **Customize template**: Users have freedom to design their lists with their 
 own fields. Each template can consist of custom fields, including text,
@@ -22,19 +26,6 @@ in tabular format, to get a full overview of the data.
 
 - **Plain Text**: Lister saves all data in plain text (yaml format) files. The user
 data is not hidden behind a database or cloud storage and is easily accessible.
-
-## Use cases
-
-Lister is the best way to keep all your list-oriented notes in a same place. 
-Manage your to-do tasks, your grocery shopping list, or just write down notes 
-or keep a track of those restaurants you want to try.
-
-## Usage
-
-1. Create a template with a name and add the field you want on that list.
-
-
-2. 
 
 ## Screenshots
 
