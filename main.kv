@@ -54,16 +54,17 @@ ScreenManager:
     markup: True
 
     MDBoxLayout:
-        pos_hint: {"x": 0.85, "center_y": 0.5}
+        pos_hint: {"center_x": 0.85, "center_y": 0.5}
+        adaptive_width: True
         MDIconButton:
-            pos_hint: {"center_x": 1, "center_y": 0.5}
+            pos_hint: {"center_y": 0.5}
             icon: "trash-can-outline"
             theme_text_color: "Custom"
             text_color: 1, 0, 0, 1
             on_release: (root.delete_item(list_of_items), app.refresh_folder_view())
 
         MDIconButton:
-            pos_hint: {"center_x": 1, "center_y": 0.5}
+            pos_hint: {"center_y": 0.5}
             icon: "archive-outline"
             theme_text_color: "Custom"
             text_color: 50, 50, 0, 1
@@ -256,7 +257,6 @@ ScreenManager:
 
     MDBoxLayout:
         orientation: "vertical"
-        padding: 20
 
         MDTopAppBar:
             id: topbar

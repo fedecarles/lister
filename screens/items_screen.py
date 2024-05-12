@@ -5,6 +5,7 @@ import os
 
 from kivy.uix.screenmanager import Screen
 
+from kivymd.app import MDApp
 from kivymd.uix.list import MDList
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.menu import MDDropdownMenu
@@ -45,13 +46,16 @@ class ItemsScreen(Screen):
 
     def refresh_view(self):
         """Refreshes the view based on the selected mode."""
+        app = MDApp.get_running_app()
         self.ids.item_list.clear_widgets()
         if self.view == "list":
+            self.ids.topbar.md_bg_color = app.theme_cls.primary_dark
             self.populate_list_view(LIST_PATH)
         elif self.view == "table":
+            self.ids.topbar.md_bg_color = app.theme_cls.primary_dark
             self.populate_table_view()
         elif self.view == "archive":
-            self.ids.topbar.title = f"{self.ids.topbar.title} - Archive"
+            self.ids.topbar.md_bg_color = app.theme_cls.primary_light
             self.populate_list_view(ARCHIVES_PATH)
 
     def sort_dropdown(self, instance):
@@ -105,6 +109,7 @@ class ItemsScreen(Screen):
     def populate_table_view(self):
         """Populates the table view."""
         all_dicts = []
+        fl = {}
 
         if not self.ids.sort_layout.children:
             sort_btn = MDFillRoundFlatIconButton(
@@ -121,7 +126,10 @@ class ItemsScreen(Screen):
             all_dicts.append(fl)
 
         sort_cols = fl.copy()
-        sort_cols.pop("File")
+        try:
+            sort_cols.pop("File")
+        except KeyError:
+            pass
         self.columns = sort_cols.keys()
 
         try:
@@ -257,7 +265,10 @@ class ItemsScreen(Screen):
             return
 
         self.ids.item_list.remove_widget(self.md_list)
-        self.populate_list_view(LIST_PATH)
+        if self.view == "list":
+            self.populate_list_view(LIST_PATH)
+        elif self.view == "archive":
+            self.populate_list_view(ARCHIVES_PATH)
 
     def go_to_edit_template(self):
         """Displays the edit template view."""

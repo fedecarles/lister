@@ -20,6 +20,7 @@ from utils import (
     LIST_PATH,
     TEMPLATE_PATH,
     ASSETS_PATH,
+    ARCHIVES_PATH,
     get_folder_list,
     open_yaml_file,
 )
@@ -80,6 +81,7 @@ class MainApp(MDApp):
             os.makedirs(LIST_PATH, exist_ok=True)
             os.makedirs(TEMPLATE_PATH, exist_ok=True)
             os.makedirs(EXPORTS_PATH, exist_ok=True)
+            os.makedirs(ARCHIVES_PATH, exist_ok=True)
 
     def on_request_permissions_done(self, _permissions, grant_results):
         """Create folders on permissions granted."""
@@ -98,7 +100,7 @@ class MainApp(MDApp):
                 os.makedirs(lister_dir)
 
             # Create 'lists', 'templates', and 'exports' directories inside 'Lister'
-            folders = ["lists", "templates", "exports"]
+            folders = ["lists", "templates", "exports", "archives"]
             for folder in folders:
                 folder_path = os.path.join(lister_dir, folder)
                 os.makedirs(folder_path, exist_ok=True)
