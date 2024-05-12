@@ -32,7 +32,9 @@ or keep a track of those restaurants you want to try.
 ## Usage
 
 1. Create a template with a name and add the field you want on that list.
-![](/images/Screenshot_20240512-150159.png =250x)
+
+![](/images/Screenshot_20240512-150159.png)
+
 2. 
 
 
