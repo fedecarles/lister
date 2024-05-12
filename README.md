@@ -33,8 +33,20 @@ or keep a track of those restaurants you want to try.
 
 1. Create a template with a name and add the field you want on that list.
 
-![](/images/Screenshot_20240512-150159.png)
 
 2. 
+
+## Screenshots
+
+<table>
+  <tr>
+    <td><img src="./images/Screenshot_20240512-150159.png" height = "480" width="270"></td>
+    <td><img src="./images/Screenshot_20240512-150113.png" height = "480" width="270"></td>
+  </tr>
+  <tr>
+    <td><img src="./images/Screenshot_20240512-150322.png" height = "480" width="270"></td>
+    <td><img src="./images/Screenshot_20240512-150334.png" height = "480" width="270"></td>
+  </tr>
+</table>
 
 
