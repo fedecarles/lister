@@ -40,12 +40,12 @@ or keep a track of those restaurants you want to try.
 
 <table>
   <tr>
-    <td><img src="./images/Screenshot_20240512-150159.png" height = "480" width="250"></td>
-    <td><img src="./images/Screenshot_20240512-150113.png" height = "480" width="250"></td>
+    <td><img src="./images/Screenshot_20240512-150159.png" height = "600" width="270"></td>
+    <td><img src="./images/Screenshot_20240512-150113.png" height = "600" width="270"></td>
   </tr>
   <tr>
-    <td><img src="./images/Screenshot_20240512-150322.png" height = "480" width="250"></td>
-    <td><img src="./images/Screenshot_20240512-150334.png" height = "480" width="250"></td>
+    <td><img src="./images/Screenshot_20240512-150322.png" height = "600" width="270"></td>
+    <td><img src="./images/Screenshot_20240512-150334.png" height = "600" width="270"></td>
   </tr>
 </table>
 
