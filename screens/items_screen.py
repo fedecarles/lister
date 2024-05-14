@@ -88,23 +88,27 @@ class ItemsScreen(Screen):
     def populate_list_view(self, source: str):
         """Populates the list view."""
         self.md_list = MDList()
-
         self.ids.sort_layout.clear_widgets()
 
-        sorted_files = sort_files_by_datetime(
-            os.listdir(os.path.join(source, self.title))
-        )
-        for file_path in sorted_files:
-            yaml_file_path = os.path.join(source, self.title, file_path)
-            fl = open_yaml_file(yaml_file_path)
-            first_field = next(iter(fl))
-            item_row = ListOfItems(
-                text=fl[first_field],
-                secondary_text=yaml_file_path,
-                secondary_font_style="Icon",
+        try:
+            sorted_files = sort_files_by_datetime(
+                os.listdir(os.path.join(source, self.title))
             )
-            self.md_list.add_widget(item_row, index=0)
-        self.ids.item_list.add_widget(self.md_list, index=0)
+            for file_path in sorted_files:
+                yaml_file_path = os.path.join(source, self.title, file_path)
+                fl = open_yaml_file(yaml_file_path)
+                first_field = next(iter(fl))
+                item_row = ListOfItems(
+                    text=fl[first_field],
+                    secondary_text=yaml_file_path,
+                    secondary_font_style="Icon",
+                )
+                self.md_list.add_widget(item_row, index=0)
+            self.ids.item_list.add_widget(self.md_list, index=0)
+
+        except OSError:
+            MDDialog(text="No archived items.").open()
+            pass
 
     def populate_table_view(self):
         """Populates the table view."""
