@@ -103,6 +103,12 @@ class ItemsScreen(Screen):
                     secondary_text=yaml_file_path,
                     secondary_font_style="Icon",
                 )
+                if source == ARCHIVES_PATH:
+                    item_row.ids.archive_btn.icon = "inbox-outline"
+                    item_row.ids.archive_btn.text_color = [0, 1, 0, 1]
+                else:
+                    item_row.ids.archive_btn.icon = "archive-outline"
+                    item_row.ids.archive_btn.text_color = [50, 50, 0, 1]
                 self.md_list.add_widget(item_row, index=0)
             self.ids.item_list.add_widget(self.md_list, index=0)
 
