@@ -4,6 +4,7 @@ import os
 
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.textfield import MDTextField
+from kivymd.uix.selectioncontrol import MDCheckbox
 
 from screens.new_item_screen import NewItemScreen
 from utils import change_screen, open_yaml_file, save_to_yaml, list_items_to_dict
@@ -27,8 +28,11 @@ class ViewItemScreen(NewItemScreen):
         )
 
         for key, value in item_dict.items():
-            add_field = MDTextField(helper_text=key, helper_text_mode="persistent")
-            add_field.text = value
+            if key == "checked":
+                add_field = MDCheckbox(active=value, disabled=True)
+            else:
+                add_field = MDTextField(helper_text=key, helper_text_mode="persistent")
+                add_field.text = value
             placeholder.add_widget(add_field)
 
         self.ids.added_items.add_widget(placeholder)

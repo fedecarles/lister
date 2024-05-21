@@ -6,13 +6,16 @@ import shutil
 from kivymd.uix.card import MDCard
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDRaisedButton
-from kivymd.uix.list import TwoLineAvatarIconListItem
+from kivymd.uix.list import TwoLineAvatarIconListItem, ILeftBody
+from kivymd.uix.selectioncontrol import MDCheckbox
 from utils import (
     LIST_PATH,
     TEMPLATE_PATH,
     ARCHIVES_PATH,
     change_screen,
     get_screen_element,
+    open_yaml_file,
+    save_to_yaml,
 )
 
 
@@ -38,6 +41,7 @@ class ListOfLists(TwoLineAvatarIconListItem, RoundCard):
         self.divider = None
         self.dialog = None
         self.height = "60dp"
+        self.checked = False
 
     def on_release(self):
         """Sets the screen title to the item title."""
@@ -86,6 +90,23 @@ class ListOfItems(TwoLineAvatarIconListItem):
         self._txt_left_pad = 0
         self.font_style = "H6"
 
+    def mark(self, check, list_of_items):
+        """Check/Uncheck item"""
+        item = open_yaml_file(self.secondary_text)
+        try:
+            if item["checked"]:
+                item["checked"] = False
+                check.icon = "checkbox-blank-outline"
+                self.text = self.text.replace("[s]", "")
+            elif not item["checked"]:
+                item["checked"] = True
+                check.icon = "checkbox-marked-outline"
+                self.text = f"[s]{self.text}[/s]"
+        except KeyError:
+            item["checked"] = False
+
+        save_to_yaml(self.secondary_text, item)
+
     def on_release(self):
         """Update screen title."""
         title_element = get_screen_element("view_item_screen", "item_title")
@@ -118,3 +139,7 @@ class ListOfItems(TwoLineAvatarIconListItem):
             self.parent.remove_widget(list_of_items)
         except OSError as e:
             MDDialog(text=f"File could not be moved: {e}")
+
+
+class LeftCheckbox(ILeftBody, MDCheckbox):
+    pass

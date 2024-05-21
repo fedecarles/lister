@@ -40,7 +40,7 @@ ScreenManager:
 
 <ListOfLists>
     id: list_of_lists
-    markup: True
+
 
     IconRightWidget:
         icon: "trash-can-outline"
@@ -53,9 +53,16 @@ ScreenManager:
     id: list_of_items
     markup: True
 
+
     MDBoxLayout:
         pos_hint: {"center_x": 0.85, "center_y": 0.5}
         adaptive_width: True
+        IconLeftWidget:
+            id: check
+            spacing: 20
+            icon: "checkbox-blank-outline"
+            on_release: root.mark(check, list_of_items)
+
         MDIconButton:
             pos_hint: {"center_y": 0.5}
             icon: "trash-can-outline"
@@ -83,6 +90,7 @@ ScreenManager:
             halign: "center"
             right_action_items: [["eraser", lambda x: root.reset_list()],["magnify", lambda x: root.open_search_dialog()], ["dots-vertical", lambda x: root.menu_open(x)]]
             elevation: 2
+
         MDBoxLayout:
             id: sort_layout
             size_hint_y: 0.1

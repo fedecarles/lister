@@ -111,6 +111,7 @@ class NewItemScreen(Screen):
         all_items = self.ids.added_items.children
 
         mapped_values = list_items_to_dict(all_items)
+        mapped_values["checked"] = False
 
         # some error handling
         if not list(mapped_values.values())[0]:

@@ -13,6 +13,7 @@ from kivymd.uix.list import MDList
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.button import MDRaisedButton
 from kivymd.uix.textfield import MDTextField
+from kivymd.uix.selectioncontrol import MDCheckbox
 
 
 # File storage paths
@@ -141,7 +142,9 @@ def dicts_to_table(list_of_dicts: list, sort_by: int = 0) -> tuple:
 
     header_data = []
 
-    dps_all = [[max(20, len(col * 2)) for col in d.values()] for d in list_of_dicts]
+    dps_all = [
+        [max(20, len(str(col) * 2)) for col in d.values()] for d in list_of_dicts
+    ]
     dps = [max(dps) for dps in zip(*dps_all)]
 
     # For sorting purposes, convert the list of dicts to a
@@ -182,6 +185,8 @@ def list_items_to_dict(all_list_items: MDList) -> dict:
         for child in item.children:
             if isinstance(child, MDTextField):
                 mapped_values[child.helper_text] = child.text
+            if isinstance(child, MDCheckbox):
+                mapped_values["checked"] = child.active
     mapped_values = dict(reversed(mapped_values.items()))
     return mapped_values
 

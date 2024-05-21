@@ -94,6 +94,9 @@ class ItemsScreen(Screen):
             sorted_files = sort_files_by_datetime(
                 os.listdir(os.path.join(source, self.title))
             )
+
+            items = []
+
             for file_path in sorted_files:
                 yaml_file_path = os.path.join(source, self.title, file_path)
                 fl = open_yaml_file(yaml_file_path)
@@ -103,18 +106,37 @@ class ItemsScreen(Screen):
                     secondary_text=yaml_file_path,
                     secondary_font_style="Icon",
                 )
+
+                # check for the checked field and add it if it doesnt exist to ensure backward compatibility.
+                try:
+                    fl["checked"]
+                except KeyError:
+                    fl["checked"] = False
+
+                item_row.checked = fl["checked"]
+                if fl["checked"]:
+                    item_row.ids.check.icon = "checkbox-marked-outline"
+                    item_row.text = f"[s]{item_row.text}[/s]"
+                else:
+                    item_row.ids.check.icon = "checkbox-blank-outline"
+
+                # change inbox/archive icons.
                 if source == ARCHIVES_PATH:
                     item_row.ids.archive_btn.icon = "inbox-outline"
                     item_row.ids.archive_btn.text_color = [0, 1, 0, 1]
                 else:
                     item_row.ids.archive_btn.icon = "archive-outline"
                     item_row.ids.archive_btn.text_color = [50, 50, 0, 1]
-                self.md_list.add_widget(item_row, index=0)
+
+                items.append(item_row)
+
+            for item in sorted(items, key=lambda x: x.checked):
+                self.md_list.add_widget(item, index=0)
+
             self.ids.item_list.add_widget(self.md_list, index=0)
 
         except OSError:
             MDDialog(text="No archived items.").open()
-            pass
 
     def populate_table_view(self):
         """Populates the table view."""
