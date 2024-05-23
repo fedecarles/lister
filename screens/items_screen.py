@@ -46,7 +46,7 @@ class ItemsScreen(Screen):
         self.view = "list"
         self.sort_by = None
         self.columns = []
-        self.md_list = MDList()
+        self.md_list = MDList(size_hint_x=0.9)
         self.dialog = None
 
     @log_runtime
@@ -155,7 +155,7 @@ class ItemsScreen(Screen):
         self.md_list.clear_widgets()
         for item_data in items_data:
             item_row = ListOfItems(
-                text=item_data["text"],
+                text=f"{item_data["text"][:20]}...",
                 secondary_text=item_data["secondary_text"],
                 secondary_font_style="Icon",
             )
