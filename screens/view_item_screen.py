@@ -7,12 +7,19 @@ from kivymd.uix.textfield import MDTextField
 from kivymd.uix.selectioncontrol import MDCheckbox
 
 from screens.new_item_screen import NewItemScreen
-from utils import change_screen, open_yaml_file, save_to_yaml, list_items_to_dict
+from utils import (
+    change_screen,
+    open_yaml_file,
+    save_to_yaml,
+    list_items_to_dict,
+    log_runtime,
+)
 
 
 class ViewItemScreen(NewItemScreen):
     """Item View screen."""
 
+    @log_runtime
     def on_enter(self, *args):
         """Loads the yaml file fields into UI."""
         self.ids.added_items.clear_widgets()

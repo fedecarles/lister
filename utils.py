@@ -4,6 +4,8 @@ import os
 from datetime import datetime
 
 import yaml
+import time
+import logging
 
 from kivy.metrics import dp
 from kivy.utils import platform
@@ -31,6 +33,19 @@ TEMPLATE_PATH = os.path.join(DOCUMENTS_PATH, "templates/")
 EXPORTS_PATH = os.path.join(DOCUMENTS_PATH, "exports/")
 ASSETS_PATH = os.path.join("assets/")
 ARCHIVES_PATH = os.path.join(DOCUMENTS_PATH, "archives/")
+
+
+# logging
+def log_runtime(func):
+    def wrapper(*args, **kwargs):
+        start_time = time.time()
+        result = func(*args, **kwargs)
+        end_time = time.time()
+        runtime = end_time - start_time
+        logging.info(f"Function {func.__name__} executed in {runtime:.4f} seconds")
+        return result
+
+    return wrapper
 
 
 # Screen operations
@@ -68,6 +83,7 @@ def change_screen(screen: str) -> None:
 
 
 # yaml files operations
+@log_runtime
 def sort_files_by_datetime(file_paths):
     """Sort the yaml files by date suffix."""
 
@@ -80,6 +96,7 @@ def sort_files_by_datetime(file_paths):
     return sorted_file_paths
 
 
+@log_runtime
 def open_yaml_file(path: str) -> dict:
     """
     Summary:
@@ -112,6 +129,7 @@ def save_to_yaml(path, my_dict) -> None:
         print(f"YAML item '{path}' has been created successfully.")
 
 
+@log_runtime
 def get_folder_list(folder: str) -> list:
     """
     Summary:
@@ -126,6 +144,7 @@ def get_folder_list(folder: str) -> list:
     return list(os.listdir(folder))
 
 
+@log_runtime
 def dicts_to_table(list_of_dicts: list, sort_by: int = 0) -> tuple:
     """
     Summary:
@@ -169,6 +188,7 @@ def dicts_to_table(list_of_dicts: list, sort_by: int = 0) -> tuple:
     return header_data, row_data
 
 
+@log_runtime
 def list_items_to_dict(all_list_items: MDList) -> dict:
     """
     Summary:
