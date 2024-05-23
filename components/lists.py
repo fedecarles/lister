@@ -88,6 +88,7 @@ class ListOfItems(TwoLineAvatarIconListItem):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._txt_left_pad = 0
+        self.paddng = 20
         self.font_style = "H6"
 
     def mark(self, check, list_of_items):
