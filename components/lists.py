@@ -4,9 +4,15 @@ import os
 import shutil
 
 from kivymd.uix.card import MDCard
-from kivymd.uix.dialog import MDDialog
-from kivymd.uix.button import MDRaisedButton
-from kivymd.uix.list import TwoLineAvatarIconListItem, ILeftBody
+from kivymd.uix.dialog import MDDialog, MDDialogSupportingText, MDDialogContentContainer
+from kivymd.uix.button import MDButton, MDButtonText
+from kivymd.uix.list import (
+    MDList,
+    MDListItem,
+    MDListItemHeadlineText,
+    MDListItemSupportingText,
+    MDListItemTrailingIcon,
+)
 from kivymd.uix.selectioncontrol import MDCheckbox
 from utils import (
     LIST_PATH,
@@ -31,43 +37,44 @@ class RoundCard(MDCard):
 
 
 # pylint: disable=R0901
-class ListOfLists(TwoLineAvatarIconListItem, RoundCard):
+class ListOfLists(MDListItem):
     """List of the user created Lists."""
 
-    def __init__(self, **kwargs):
+    def __init__(self, headline, **kwargs):
         super().__init__(**kwargs)
+        self.headline = MDListItemHeadlineText(text=headline)
         self._txt_left_pad = 10
         self.font_style = "H5"
-        self.divider = None
         self.dialog = None
         self.height = "60dp"
-        self.checked = False
 
     def on_release(self):
         """Sets the screen title to the item title."""
         title = get_screen_element("items_screen", "topbar")
-        title.title = self.text
+        title.title = self.headline.text
         change_screen("items_screen")
 
     def delete_list_dialog(self):
         """Displays delete list confirmation dialog."""
         self.dialog = MDDialog(
-            text="This will remove all items under this lists.",
-            buttons=[
-                MDRaisedButton(
-                    text="Delete", md_bg_color="red", on_release=self.delete_folder
+            MDDialogSupportingText(text="This will remove all items under this lists."),
+            MDDialogContentContainer(
+                MDButton(
+                    MDButtonText(text="Delete"),
+                    md_bg_color="red",
+                    on_release=self.delete_folder,
                 ),
-                MDRaisedButton(text="Cancel", on_release=self.close_dialog),
-            ],
+                MDButton(MDButtonText(text="Cancel"), on_release=self.close_dialog),
+            ),
         )
         self.dialog.open()
 
     def delete_folder(self, _):
         """Deletes the list folder and all files."""
         list_name = get_screen_element("items_screen", "topbar")
-        list_name.text = self.text
-        template_file = os.path.join(TEMPLATE_PATH, f"{self.text}.yaml")
-        list_dir = os.path.join(LIST_PATH, f"{self.text}/")
+        list_name.text = self.headline.text
+        template_file = os.path.join(TEMPLATE_PATH, f"{self.headline.text}.yaml")
+        list_dir = os.path.join(LIST_PATH, f"{self.headline.text}/")
         try:
             shutil.rmtree(list_dir)
             os.remove(template_file)
@@ -82,14 +89,15 @@ class ListOfLists(TwoLineAvatarIconListItem, RoundCard):
 
 
 # pylint: disable=R0901
-class ListOfItems(TwoLineAvatarIconListItem):
+class ListOfItems(MDListItem):
     """List of user created items."""
 
-    def __init__(self, **kwargs):
+    def __init__(self, headline, secondary, **kwargs):
         super().__init__(**kwargs)
-        self._txt_left_pad = 0
-        self.paddng = 20
-        self.font_style = "H6"
+        self.row = MDListItem(
+            MDListItemHeadlineText(text=headline),
+            MDListItemSupportingText(text=secondary),
+        )
 
     def mark(self, check, list_of_items):
         """Check/Uncheck item"""
@@ -142,5 +150,5 @@ class ListOfItems(TwoLineAvatarIconListItem):
             MDDialog(text=f"File could not be moved: {e}")
 
 
-class LeftCheckbox(ILeftBody, MDCheckbox):
+class LeftCheckbox(MDCheckbox):
     pass

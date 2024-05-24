@@ -6,10 +6,6 @@ ScreenManager:
     TemplateCreateScreen:
     EditTemplateScreen
 
-<IconButton>:
-    size_hint: None, None
-    size: dp(48), dp(48)
-
 <MainScreen>
     name: "main_screen"
     id: listar
@@ -31,7 +27,7 @@ ScreenManager:
                 spacing: "16dp"
                 id: container
     
-    MDFloatingActionButton:
+    MDFabButton:
         icon: "plus-thick"
         id: menu_btn
         on_release: root.manager.current = "template_create_screen"
@@ -41,8 +37,7 @@ ScreenManager:
 <ListOfLists>
     id: list_of_lists
 
-
-    IconRightWidget:
+    MDIconButton:
         icon: "trash-can-outline"
         theme_text_color: "Custom"
         text_color: 1, 0, 0, 1
@@ -53,13 +48,13 @@ ScreenManager:
     id: list_of_items
     markup: True
 
-
     MDBoxLayout:
         pos_hint: {"center_x": 0.85, "center_y": 0.5}
         adaptive_width: True
-        IconLeftWidget:
+
+        MDIconButton:
             id: check
-            spacing: 20
+            pos_hint: {"center_y": 0.5}
             icon: "checkbox-blank-outline"
             on_release: root.mark(check, list_of_items)
 
@@ -105,7 +100,7 @@ ScreenManager:
         MDBoxLayout:
             size_hint: (.9, 0.25)
             pos_hint: {'center_y': 0.5, "center_x": 0.5}
-            MDFillRoundFlatIconButton:
+            MDIconButton:
                 text: "Back"
                 icon: "backspace"
                 icon_size: "30sp"
@@ -114,7 +109,7 @@ ScreenManager:
                 gravity: "left"
                 pos_hint: {"center_y": 0.5}
             Widget:
-            MDFillRoundFlatIconButton:
+            MDIconButton:
                 text: "New"
                 icon: "pencil-outline"
                 icon_size: "30sp"
@@ -148,7 +143,7 @@ ScreenManager:
     MDBoxLayout:
         size_hint: (.9, 0.25)
         pos_hint: {'center_y': 0.1, "center_x": 0.5}
-        MDFillRoundFlatIconButton:
+        MDIconButton:
             text: "Back"
             icon: "backspace"
             icon_size: "30sp"
@@ -156,7 +151,7 @@ ScreenManager:
             gravity: "left"
             pos_hint: {"center_y": 0.5}
         Widget:
-        MDFillRoundFlatIconButton:
+        MDIconButton:
             text: "Save"
             icon: "content-save"
             icon_size: "30sp"
@@ -197,7 +192,7 @@ ScreenManager:
     MDBoxLayout:
         size_hint: (.9, 0.25)
         pos_hint: {'center_y': 0.1, "center_x": 0.5}
-        MDFillRoundFlatIconButton:
+        MDIconButton:
             text: "Back"
             icon: "backspace"
             icon_size: "30sp"
@@ -205,7 +200,7 @@ ScreenManager:
             gravity: "left"
             pos_hint: {"center_y": 0.5}
         Widget:
-        MDFillRoundFlatIconButton:
+        MDIconButton:
             text: "Save"
             icon: "content-save"
             icon_size: "30sp"
@@ -227,7 +222,7 @@ ScreenManager:
             pos_hint: {"top": 0.9}
             id: list_name
             hint_text: "List Name"
-            mode: "round"
+            mode: "outlined"
             input_type: "text"
 
         MDIconButton:
@@ -244,7 +239,7 @@ ScreenManager:
     MDBoxLayout:
         size_hint: (.9, 0.25)
         pos_hint: {'center_y': 0.1, "center_x": 0.5}
-        MDFillRoundFlatIconButton:
+        MDIconButton:
             text: "Back"
             icon: "backspace"
             icon_size: "30sp"
@@ -252,7 +247,7 @@ ScreenManager:
             gravity: "left"
             pos_hint: {"center_y": 0.5}
         Widget:
-        MDFillRoundFlatIconButton:
+        MDIconButton:
             text: "Save"
             icon: "content-save"
             icon_size: "30sp"
@@ -283,7 +278,7 @@ ScreenManager:
     MDBoxLayout:
         size_hint: (.9, 0.25)
         pos_hint: {'center_y': 0.1, "center_x": 0.5}
-        MDFillRoundFlatIconButton:
+        MDIconButton:
             text: "Back"
             icon: "backspace"
             icon_size: "30sp"
@@ -291,7 +286,7 @@ ScreenManager:
             gravity: "left"
             pos_hint: {"center_y": 0.5}
         Widget:
-        MDFillRoundFlatIconButton:
+        MDIconButton:
             text: "Save"
             icon: "content-save"
             icon_size: "30sp"

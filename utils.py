@@ -1,11 +1,11 @@
 """Helper and utility functions."""
 
 import os
+import time
+import logging
 from datetime import datetime
 
 import yaml
-import time
-import logging
 
 from kivy.metrics import dp
 from kivy.utils import platform
@@ -13,7 +13,7 @@ from kivy.utils import platform
 from kivymd.app import MDApp
 from kivymd.uix.list import MDList
 from kivymd.uix.dialog import MDDialog
-from kivymd.uix.button import MDRaisedButton
+from kivymd.uix.button import MDButton
 from kivymd.uix.textfield import MDTextField
 from kivymd.uix.selectioncontrol import MDCheckbox
 
@@ -229,7 +229,7 @@ def create_dialog(content, cancel_fn, callback_fn) -> MDDialog:
         type="custom",
         content_cls=content,
         buttons=[
-            MDRaisedButton(text="Cancel", md_bg_color="red", on_release=cancel_fn),
-            MDRaisedButton(text="Search", on_release=callback_fn),
+            MDButton(text="Cancel", md_bg_color="red", on_release=cancel_fn),
+            MDButton(text="Search", on_release=callback_fn),
         ],
     )

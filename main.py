@@ -8,6 +8,8 @@ from kivy.utils import platform
 from kivy.uix.screenmanager import ScreenManager
 
 from components.lists import ListOfLists
+
+from kivymd.uix.list import MDListItem, MDListItemHeadlineText
 from screens.main_screen import MainScreen
 from screens.items_screen import ItemsScreen
 from screens.new_item_screen import NewItemScreen
@@ -43,7 +45,9 @@ class MainApp(MDApp):
             main_screen = self.root.get_screen("main_screen")
 
             for list_item in all_lists:
-                add_list = ListOfLists(text=list_item)
+                # add_list = ListOfLists(MDListItemHeadlineText(text=list_item))
+                add_list = ListOfLists(list_item)
+                # add_list = MDListItem(MDListItemHeadlineText(text=list_item))
                 main_screen.ids.container.add_widget(add_list)
 
     def refresh_folder_view(self):
@@ -55,7 +59,7 @@ class MainApp(MDApp):
         # Add widgets for each folder
         for list_item in new_folder_list:
             if list_item not in self.folder_list:
-                add_list = ListOfLists(text=list_item)
+                add_list = ListOfLists(list_item)
                 screen.ids.container.add_widget(add_list)
                 self.folder_list.append(list_item)
             else:
@@ -111,7 +115,7 @@ class MainApp(MDApp):
         """Build app theme and screens"""
         self.create_dirs()
         self.theme_cls.theme_style = CONFIG["theme"]
-        self.theme_cls.primary_palette = "DeepPurple"
+        self.theme_cls.primary_palette = "Deepskyblue"
         self.theme_cls.primary_hue = "200"
 
         sm = ScreenManager()

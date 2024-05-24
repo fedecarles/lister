@@ -10,11 +10,17 @@ from kivy.clock import mainthread
 from kivy.clock import Clock
 
 from kivymd.app import MDApp
-from kivymd.uix.list import MDList
+from kivymd.uix.list import (
+    MDList,
+    MDListItem,
+    MDListItemHeadlineText,
+    MDListItemSupportingText,
+)
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.menu import MDDropdownMenu
-from kivymd.uix.datatables import MDDataTable
-from kivymd.uix.button import MDFillRoundFlatIconButton
+
+# from kivymd.uix.datatables import MDDataTable
+from kivymd.uix.button import MDIconButton
 
 
 from components.lists import ListOfItems
@@ -63,13 +69,10 @@ class ItemsScreen(Screen):
         app = MDApp.get_running_app()
         self.ids.item_list.clear_widgets()
         if self.view == "list":
-            self.ids.topbar.md_bg_color = app.theme_cls.primary_dark
             self.populate_list_view(LIST_PATH)
         elif self.view == "table":
-            self.ids.topbar.md_bg_color = app.theme_cls.primary_dark
             self.populate_table_view()
         elif self.view == "archive":
-            self.ids.topbar.md_bg_color = app.theme_cls.primary_light
             self.populate_list_view(ARCHIVES_PATH)
 
     @log_runtime
@@ -154,26 +157,32 @@ class ItemsScreen(Screen):
 
         self.md_list.clear_widgets()
         for item_data in items_data:
-            item_row = ListOfItems(
-                text=f"{item_data["text"][:20]}...",
-                secondary_text=item_data["secondary_text"],
-                secondary_font_style="Icon",
-            )
+            # item_row = ListOfItems(
+            #    text=f"{item_data["text"][:20]}...",
+            #    secondary_text=item_data["secondary_text"],
+            #    secondary_font_style="Icon",
+            # )
+
+            # item_row = MDListItem(
+            #    MDListItemHeadlineText(text=item_data["text"][:20]),
+            #    MDListItemSupportingText(item_data["secondary_text"]),
+            # )
+            item_row = ListOfItems("lol", "adad").row
 
             # Ensure backward compatibility by adding 'checked' field if missing
-            if item_data["checked"]:
-                item_row.ids.check.icon = "checkbox-marked-outline"
-                item_row.text = f"[s]{item_row.text}[/s]"
-            else:
-                item_row.ids.check.icon = "checkbox-blank-outline"
+            # if item_data["checked"]:
+            #    item_row.ids.check.icon = "checkbox-marked-outline"
+            #    item_row.text = f"[s]{item_row.text}[/s]"
+            # else:
+            #    item_row.ids.check.icon = "checkbox-blank-outline"
 
-            # Change inbox/archive icons
-            if item_data["source"] == ARCHIVES_PATH:
-                item_row.ids.archive_btn.icon = "inbox-outline"
-                item_row.ids.archive_btn.text_color = [0, 1, 0, 1]
-            else:
-                item_row.ids.archive_btn.icon = "archive-outline"
-                item_row.ids.archive_btn.text_color = [50, 50, 0, 1]
+            ## Change inbox/archive icons
+            # if item_data["source"] == ARCHIVES_PATH:
+            #    item_row.ids.archive_btn.icon = "inbox-outline"
+            #    item_row.ids.archive_btn.text_color = [0, 1, 0, 1]
+            # else:
+            #    item_row.ids.archive_btn.icon = "archive-outline"
+            #    item_row.ids.archive_btn.text_color = [50, 50, 0, 1]
 
             self.md_list.add_widget(item_row, index=0)
 
@@ -186,7 +195,7 @@ class ItemsScreen(Screen):
         fl = {}
 
         if not self.ids.sort_layout.children:
-            sort_btn = MDFillRoundFlatIconButton(
+            sort_btn = MDIconButton(
                 text="Sort",
                 icon="sort",
                 on_release=self.sort_dropdown,
