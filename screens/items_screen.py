@@ -14,7 +14,6 @@ from kivymd.uix.list import (
     MDList,
     MDListItem,
     MDListItemHeadlineText,
-    MDListItemSupportingText,
 )
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.menu import MDDropdownMenu
@@ -52,14 +51,13 @@ class ItemsScreen(Screen):
         self.view = "list"
         self.sort_by = None
         self.columns = []
-        self.md_list = MDList(size_hint_x=0.9)
         self.dialog = None
 
     @log_runtime
     def on_enter(self, *args):
         """Populates the list Items."""
         if self.title != self.ids.topbar.title:
-            self.md_list.clear_widgets()  # on changing lists, clear widgets
+            self.ids.item_list.clear_widgets()  # on changing lists, clear widgets
             self.title = self.ids.topbar.title
         self.refresh_view()
 
@@ -136,7 +134,8 @@ class ItemsScreen(Screen):
                     return None
 
             # Use ThreadPoolExecutor to process files in parallel
-            if len(self.md_list.children) != len(sorted_files):
+            print(len(self.ids.item_list.children), len(sorted_files))
+            if len(self.ids.item_list.children) != len(sorted_files):
                 with ThreadPoolExecutor() as executor:
                     items_data = sorted(
                         list(executor.map(process_file, sorted_files)),
@@ -145,8 +144,6 @@ class ItemsScreen(Screen):
 
                 # Schedule the update of UI elements on the main thread
                 Clock.schedule_once(lambda _: self.update_ui(items_data))
-            else:
-                self.ids.item_list.add_widget(self.md_list, index=0)
 
         except OSError:
             MDDialog(text="No items to show.").open()
@@ -155,38 +152,28 @@ class ItemsScreen(Screen):
     def update_ui(self, items_data):
         """Updates the UI with processed items data."""
 
-        self.md_list.clear_widgets()
+        self.ids.item_list.clear_widgets()
         for item_data in items_data:
-            # item_row = ListOfItems(
-            #    text=f"{item_data["text"][:20]}...",
-            #    secondary_text=item_data["secondary_text"],
-            #    secondary_font_style="Icon",
-            # )
-
-            # item_row = MDListItem(
-            #    MDListItemHeadlineText(text=item_data["text"][:20]),
-            #    MDListItemSupportingText(item_data["secondary_text"]),
-            # )
-            item_row = ListOfItems("lol", "adad").row
+            item_row = ListOfItems()
+            item_row.ids.headline.text = item_data["text"][:20]
+            item_row.yaml_path = item_data["secondary_text"]
 
             # Ensure backward compatibility by adding 'checked' field if missing
-            # if item_data["checked"]:
-            #    item_row.ids.check.icon = "checkbox-marked-outline"
-            #    item_row.text = f"[s]{item_row.text}[/s]"
-            # else:
-            #    item_row.ids.check.icon = "checkbox-blank-outline"
+            if item_data["checked"]:
+                item_row.ids.check.icon = "checkbox-marked-outline"
+                item_row.text = f"[s]{item_row.ids.headline.text}[/s]"
+            else:
+                item_row.ids.check.icon = "checkbox-blank-outline"
 
             ## Change inbox/archive icons
-            # if item_data["source"] == ARCHIVES_PATH:
-            #    item_row.ids.archive_btn.icon = "inbox-outline"
-            #    item_row.ids.archive_btn.text_color = [0, 1, 0, 1]
-            # else:
-            #    item_row.ids.archive_btn.icon = "archive-outline"
-            #    item_row.ids.archive_btn.text_color = [50, 50, 0, 1]
+            if item_data["source"] == ARCHIVES_PATH:
+                item_row.ids.archive_btn.icon = "inbox-outline"
+                item_row.ids.archive_btn.text_color = [0, 1, 0, 1]
+            else:
+                item_row.ids.archive_btn.icon = "archive-outline"
+                item_row.ids.archive_btn.text_color = [50, 50, 0, 1]
 
-            self.md_list.add_widget(item_row, index=0)
-
-        self.ids.item_list.add_widget(self.md_list, index=0)
+            self.ids.item_list.add_widget(item_row)
 
     @log_runtime
     def populate_table_view(self):

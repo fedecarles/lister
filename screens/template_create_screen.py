@@ -6,12 +6,12 @@ from kivy.uix.screenmanager import Screen
 
 from kivymd.uix.dialog import MDDialog
 from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.button import MDButton
+from kivymd.uix.button import MDButton, MDButtonText
 from kivymd.uix.menu import MDDropdownMenu
-from kivymd.uix.dropdownitem import MDDropDownItem
+from kivymd.uix.dropdownitem import MDDropDownItem, MDDropDownItemText
 from kivymd.uix.textfield import MDTextField
 
-from components.dialogs import CategoryInputDialog
+from components.lists import NewFieldForm
 from utils import (
     LIST_PATH,
     TEMPLATE_PATH,
@@ -34,77 +34,8 @@ class TemplateCreateScreen(Screen):
 
     def add_field(self):
         """Adds a field to the template on user request."""
-
-        field_row = MDBoxLayout(
-            orientation="horizontal",
-            size_hint_y=None,
-            adaptive_height=True,
-            padding=10,
-        )
-        field_name = MDTextField(
-            hint_text="Field name...",
-            id="name",
-            mode="outlined",
-            input_type="text",
-        )
-        field_type_btn = MDDropDownItem()
-        field_type_btn.text = "Text"
-        field_type_btn.bind(
-            on_release=lambda _, btn=field_type_btn: self.menu_open(btn)
-        )
-        field_row.add_widget(field_name)
-        field_row.add_widget(field_type_btn)
-        self.ids.added_fields.add_widget(field_row)
-
-    def menu_open(self, caller_btn):
-        """Opens the field category dropdown menu."""
-        options = ["Text", "Number", "Date", "Category"]
-        menu_items = [
-            {
-                "text": f"{o}",
-                "viewclass": "OneLineListItem",
-                "on_release": lambda x=f"{o}": self.update_button_text(caller_btn, x),
-            }
-            for o in options
-        ]
-        menu = MDDropdownMenu(
-            caller=caller_btn,
-            items=menu_items,
-            position="bottom",
-            adaptive_width=True,
-            hor_growth="left",
-        )
-        menu.open()
-
-    def update_button_text(self, caller_btn, text):
-        """Updates the buton with category values."""
-        caller_btn.text = text
-        if text == "Category":
-            self.dialog = MDDialog(
-                type="custom",
-                content_cls=CategoryInputDialog(),
-                buttons=[
-                    MDButton(
-                        text="Cancel", md_bg_color="red", on_release=self.dismiss_dialog
-                    ),
-                    MDButton(
-                        text="Save",
-                        on_release=lambda _: self.set_categories(caller_btn),
-                    ),
-                ],
-            )
-            self.dialog.open()
-
-    def dismiss_dialog(self, _):
-        """Closes the dialog."""
-        if self.dialog:
-            self.dialog.dismiss()
-
-    def set_categories(self, caller_btn):
-        """Sets the categories as the button value."""
-        categories = self.dialog.content_cls.ids.categories.text
-        caller_btn.text = f"[{categories}]"
-        self.dismiss_dialog(caller_btn)
+        new_field = NewFieldForm()
+        self.ids.added_fields.add_widget(new_field)
 
     def on_save(self):
         """Saves the template to a yaml file."""
@@ -129,8 +60,8 @@ class TemplateCreateScreen(Screen):
             return
 
         for widget in md_boxlayouts.children:
-            name = widget.children[1].text
-            typ = widget.children[0].text
+            name = widget.ids.name.text
+            typ = widget.ids.category_text.text
             if typ not in ["Text", "Number", "Date"]:
                 categories = typ.strip("[]")
                 categories = categories.split(",")

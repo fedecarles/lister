@@ -204,7 +204,7 @@ def list_items_to_dict(all_list_items: MDList) -> dict:
     for item in all_list_items:
         for child in item.children:
             if isinstance(child, MDTextField):
-                mapped_values[child.helper_text] = child.text
+                mapped_values[child.children[0].text] = child.text
             if isinstance(child, MDCheckbox):
                 mapped_values["checked"] = child.active
     mapped_values = dict(reversed(mapped_values.items()))

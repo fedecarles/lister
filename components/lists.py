@@ -3,16 +3,24 @@
 import os
 import shutil
 
+from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.card import MDCard
-from kivymd.uix.dialog import MDDialog, MDDialogSupportingText, MDDialogContentContainer
+from kivymd.uix.dialog import (
+    MDDialog,
+    MDDialogSupportingText,
+    MDDialogContentContainer,
+    MDDialogButtonContainer,
+)
 from kivymd.uix.button import MDButton, MDButtonText
+from kivymd.uix.dropdownitem import MDDropDownItem, MDDropDownItemText
+from kivymd.uix.menu import MDDropdownMenu
+from kivymd.uix.textfield import MDTextField, MDTextFieldHelperText
 from kivymd.uix.list import (
     MDList,
     MDListItem,
-    MDListItemHeadlineText,
-    MDListItemSupportingText,
-    MDListItemTrailingIcon,
 )
+from kivymd.uix.card import MDCardSwipe
+from kivymd.uix.label import MDLabel
 from kivymd.uix.selectioncontrol import MDCheckbox
 from utils import (
     LIST_PATH,
@@ -37,21 +45,17 @@ class RoundCard(MDCard):
 
 
 # pylint: disable=R0901
-class ListOfLists(MDListItem):
+class ListOfLists(MDList):
     """List of the user created Lists."""
 
-    def __init__(self, headline, **kwargs):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.headline = MDListItemHeadlineText(text=headline)
-        self._txt_left_pad = 10
-        self.font_style = "H5"
         self.dialog = None
-        self.height = "60dp"
 
     def on_release(self):
         """Sets the screen title to the item title."""
         title = get_screen_element("items_screen", "topbar")
-        title.title = self.headline.text
+        title.title = self.ids.list_name.text
         change_screen("items_screen")
 
     def delete_list_dialog(self):
@@ -72,9 +76,9 @@ class ListOfLists(MDListItem):
     def delete_folder(self, _):
         """Deletes the list folder and all files."""
         list_name = get_screen_element("items_screen", "topbar")
-        list_name.text = self.headline.text
-        template_file = os.path.join(TEMPLATE_PATH, f"{self.headline.text}.yaml")
-        list_dir = os.path.join(LIST_PATH, f"{self.headline.text}/")
+        list_name.text = self.ids.list_name.text
+        template_file = os.path.join(TEMPLATE_PATH, f"{self.ids.list_name.text}.yaml")
+        list_dir = os.path.join(LIST_PATH, f"{self.ids.list_name.text}/")
         try:
             shutil.rmtree(list_dir)
             os.remove(template_file)
@@ -89,49 +93,46 @@ class ListOfLists(MDListItem):
 
 
 # pylint: disable=R0901
-class ListOfItems(MDListItem):
+class ListOfItems(MDCardSwipe):
     """List of user created items."""
 
-    def __init__(self, headline, secondary, **kwargs):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.row = MDListItem(
-            MDListItemHeadlineText(text=headline),
-            MDListItemSupportingText(text=secondary),
-        )
+        self.yaml_path = ""
 
-    def mark(self, check, list_of_items):
+    def mark(self, check):
         """Check/Uncheck item"""
-        item = open_yaml_file(self.secondary_text)
+        item = open_yaml_file(self.yaml_path)
         try:
             if item["checked"]:
                 item["checked"] = False
                 check.icon = "checkbox-blank-outline"
-                self.text = self.text.replace("[s]", "")
+                self.ids.headline.text = self.ids.headline.text.replace("[s]", "")
             elif not item["checked"]:
                 item["checked"] = True
                 check.icon = "checkbox-marked-outline"
-                self.text = f"[s]{self.text}[/s]"
+                self.ids.headline.text = f"[s]{self.ids.headline.text}[/s]"
         except KeyError:
             item["checked"] = False
 
-        save_to_yaml(self.secondary_text, item)
+        save_to_yaml(self.yaml_path, item)
 
     def on_release(self):
         """Update screen title."""
         title_element = get_screen_element("view_item_screen", "item_title")
-        title_element.text = self.secondary_text.replace(".yaml", "")
+        title_element.text = self.yaml_path.replace(".yaml", "")
         change_screen("view_item_screen")
 
     def delete_item(self, list_of_items):
         """Deletes the item yaml file."""
-        os.remove(f"{self.secondary_text}")
+        os.remove(f"{self.yaml_path}")
         self.parent.remove_widget(list_of_items)
 
     def archive_item(self, list_of_items):
         """Moves item to archives."""
 
         list_name = get_screen_element("items_screen", "topbar").title
-        source_file = os.path.join(self.secondary_text)
+        source_file = os.path.join(self.yaml_path)
         destination_path = ""
 
         file = os.path.basename(source_file)
@@ -152,3 +153,66 @@ class ListOfItems(MDListItem):
 
 class LeftCheckbox(MDCheckbox):
     pass
+
+
+class NewFieldForm(MDList):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+    def menu_open(self, caller_btn):
+        """Opens the field category dropdown menu."""
+        options = ["Text", "Number", "Date", "Category"]
+        menu_items = [
+            {
+                "text": f"{o}",
+                "on_release": lambda x=f"{o}": self.update_button_text(caller_btn, x),
+            }
+            for o in options
+        ]
+        menu = MDDropdownMenu(
+            caller=caller_btn,
+            items=menu_items,
+            position="bottom",
+            adaptive_width=True,
+            hor_growth="left",
+        )
+        menu.open()
+
+    def update_button_text(self, caller_btn, text):
+        """Updates the buton with category values."""
+        self.text_field = MDTextField(hint_text="Category A, Category B...")
+        if text == "Category":
+            self.dialog = MDDialog(
+                MDDialogSupportingText(text="Enter Categories"),
+                MDDialogContentContainer(self.text_field),
+                MDDialogButtonContainer(
+                    MDButton(
+                        MDButtonText(text="Cancel"),
+                        md_bg_color="red",
+                        on_release=self.dismiss_dialog,
+                    ),
+                    MDButton(
+                        MDButtonText(text="Save"),
+                        on_release=lambda _: self.set_categories(caller_btn),
+                    ),
+                ),
+            )
+            self.dialog.open()
+        else:
+            self.ids.category_text.text = text
+
+    def dismiss_dialog(self, _):
+        """Closes the dialog."""
+        if self.dialog:
+            self.dialog.dismiss()
+
+    def set_categories(self, caller_btn):
+        """Sets the categories as the button value."""
+        categories = self.text_field.text
+        self.ids.category_text.text = f"[{categories}]"
+        self.dismiss_dialog(caller_btn)
+
+
+class NewItemForm(MDBoxLayout):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)

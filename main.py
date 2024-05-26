@@ -39,16 +39,18 @@ class MainApp(MDApp):
 
     def on_start(self):
         """Populate the List of Lists."""
-        if os.path.exists(LIST_PATH):
-            self.folder_list = get_folder_list(LIST_PATH)
-            all_lists = os.listdir(LIST_PATH)
-            main_screen = self.root.get_screen("main_screen")
+        self.refresh_folder_view()
+        # if os.path.exists(LIST_PATH):
+        #    self.folder_list = get_folder_list(LIST_PATH)
+        #    all_lists = os.listdir(LIST_PATH)
+        #    main_screen = self.root.get_screen("main_screen")
 
-            for list_item in all_lists:
-                # add_list = ListOfLists(MDListItemHeadlineText(text=list_item))
-                add_list = ListOfLists(list_item)
-                # add_list = MDListItem(MDListItemHeadlineText(text=list_item))
-                main_screen.ids.container.add_widget(add_list)
+        #    for list_item in all_lists:
+        #        # add_list = ListOfLists(MDListItemHeadlineText(text=list_item))
+        #        add_list = ListOfLists()
+        #        add_list.ids.list_name.text = list_item
+        #        # add_list = MDListItem(MDListItemHeadlineText(text=list_item))
+        #        main_screen.ids.list_container.add_widget(add_list)
 
     def refresh_folder_view(self):
         """Updates the display to show the current list of folders."""
@@ -59,8 +61,9 @@ class MainApp(MDApp):
         # Add widgets for each folder
         for list_item in new_folder_list:
             if list_item not in self.folder_list:
-                add_list = ListOfLists(list_item)
-                screen.ids.container.add_widget(add_list)
+                add_list = ListOfLists()
+                add_list.ids.list_name.text = list_item
+                screen.ids.list_container.add_widget(add_list)
                 self.folder_list.append(list_item)
             else:
                 print(f"Item: {list_item} is already on self.folder_list")
@@ -115,8 +118,8 @@ class MainApp(MDApp):
         """Build app theme and screens"""
         self.create_dirs()
         self.theme_cls.theme_style = CONFIG["theme"]
-        self.theme_cls.primary_palette = "Deepskyblue"
-        self.theme_cls.primary_hue = "200"
+        self.theme_cls.primary_palette = "Olive"
+        # self.theme_cls.primary_hue = "200"
 
         sm = ScreenManager()
         sm.add_widget(MainScreen(name="main_screen"))

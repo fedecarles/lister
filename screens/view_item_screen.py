@@ -3,7 +3,7 @@
 import os
 
 from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.textfield import MDTextField
+from kivymd.uix.textfield import MDTextField, MDTextFieldHelperText
 from kivymd.uix.selectioncontrol import MDCheckbox
 
 from screens.new_item_screen import NewItemScreen
@@ -38,7 +38,9 @@ class ViewItemScreen(NewItemScreen):
             if key == "checked":
                 add_field = MDCheckbox(active=value, disabled=True)
             else:
-                add_field = MDTextField(helper_text=key, helper_text_mode="persistent")
+                add_field = MDTextField(
+                    MDTextFieldHelperText(text=key, mode="persistent"), mode="filled"
+                )
                 add_field.text = value
             placeholder.add_widget(add_field)
 
