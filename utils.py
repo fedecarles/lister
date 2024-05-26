@@ -9,14 +9,19 @@ import yaml
 
 from kivy.metrics import dp
 from kivy.utils import platform
-
+from kivymd.uix.dialog import (
+    MDDialog,
+    MDDialogSupportingText,
+    MDDialogContentContainer,
+    MDDialogButtonContainer,
+)
 from kivymd.app import MDApp
 from kivymd.uix.list import MDList
-from kivymd.uix.dialog import MDDialog
-from kivymd.uix.button import MDButton
+from kivymd.uix.button import MDButton, MDButtonText
 from kivymd.uix.textfield import MDTextField
 from kivymd.uix.selectioncontrol import MDCheckbox
 
+from components.dialogs import SearchDialog
 
 # File storage paths
 if platform == "android":
@@ -215,7 +220,7 @@ def list_items_to_dict(all_list_items: MDList) -> dict:
 def create_dialog(content, cancel_fn, callback_fn) -> MDDialog:
     """
     Summary:
-    Returns an MDDialog/
+    Returns an MDDialog.
 
     Parameters:
     - content (custom): A custom Dialog class.
@@ -225,11 +230,13 @@ def create_dialog(content, cancel_fn, callback_fn) -> MDDialog:
     Returns:
     An MDDialog
     """
-    return MDDialog(
-        type="custom",
-        content_cls=content,
-        buttons=[
-            MDButton(text="Cancel", md_bg_color="red", on_release=cancel_fn),
-            MDButton(text="Search", on_release=callback_fn),
-        ],
-    )
+    return SearchDialog()
+    # return MDDialog(
+    #    MDDialogContentContainer(MDTextField()),
+    #    MDDialogButtonContainer(
+    #        MDButton(
+    #            MDButtonText(text="Cancel"), md_bg_color="red", on_release=cancel_fn
+    #        ),
+    #        MDButton(MDButtonText(text="Search"), on_release=callback_fn),
+    #    ),
+    # )

@@ -117,7 +117,7 @@ class ListOfItems(MDCardSwipe):
 
         save_to_yaml(self.yaml_path, item)
 
-    def on_release(self):
+    def on_press(self):
         """Update screen title."""
         title_element = get_screen_element("view_item_screen", "item_title")
         title_element.text = self.yaml_path.replace(".yaml", "")

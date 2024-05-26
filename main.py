@@ -40,6 +40,7 @@ class MainApp(MDApp):
     def on_start(self):
         """Populate the List of Lists."""
         self.refresh_folder_view()
+
         # if os.path.exists(LIST_PATH):
         #    self.folder_list = get_folder_list(LIST_PATH)
         #    all_lists = os.listdir(LIST_PATH)
@@ -118,7 +119,7 @@ class MainApp(MDApp):
         """Build app theme and screens"""
         self.create_dirs()
         self.theme_cls.theme_style = CONFIG["theme"]
-        self.theme_cls.primary_palette = "Olive"
+        self.theme_cls.primary_palette = "Aquamarine"
         # self.theme_cls.primary_hue = "200"
 
         sm = ScreenManager()

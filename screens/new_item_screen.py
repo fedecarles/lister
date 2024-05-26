@@ -113,7 +113,6 @@ class NewItemScreen(Screen):
     def on_save(self):
         """Saves the item as a yaml file"""
         all_items = self.ids.added_items.children
-        print(all_items)
 
         mapped_values = list_items_to_dict(all_items)
         mapped_values["checked"] = False

@@ -134,7 +134,6 @@ class ItemsScreen(Screen):
                     return None
 
             # Use ThreadPoolExecutor to process files in parallel
-            print(len(self.ids.item_list.children), len(sorted_files))
             if len(self.ids.item_list.children) != len(sorted_files):
                 with ThreadPoolExecutor() as executor:
                     items_data = sorted(
@@ -221,27 +220,22 @@ class ItemsScreen(Screen):
         menu_items = [
             {
                 "text": "List View",
-                "viewclass": "OneLineListItem",
                 "on_release": lambda x="list": self.update_view(topbar, x),
             },
             {
                 "text": "Table View",
-                "viewclass": "OneLineListItem",
                 "on_release": lambda x="table": self.update_view(topbar, x),
             },
             {
                 "text": "Export Data",
-                "viewclass": "OneLineListItem",
                 "on_release": lambda _="export": self.export_data(self.title),
             },
             {
                 "text": "Edit Template",
-                "viewclass": "OneLineListItem",
                 "on_release": lambda _="edit": self.go_to_edit_template(),
             },
             {
                 "text": "Archive",
-                "viewclass": "OneLineListItem",
                 "on_release": lambda x="archive": self.update_view(topbar, x),
             },
         ]
@@ -321,9 +315,7 @@ class ItemsScreen(Screen):
 
             self.dismiss_dialog(_)
 
-        self.dialog = create_dialog(
-            SearchDialog(), self.dismiss_dialog, search_callback
-        )
+        self.dialog = SearchDialog()
         self.dialog.open()
 
     @log_runtime

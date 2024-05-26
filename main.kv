@@ -13,11 +13,23 @@ ScreenManager:
         orientation: "vertical"
 
         MDTopAppBar:
-            title: "Lister"
             id: topbar
-            halign: "center"
-            right_action_items: [["eraser", lambda x: root.reset_list()],["magnify", lambda x: root.open_search_dialog()], ["dots-vertical", lambda x: root.main_menu_open(x)]]
+            type: "small"
             elevation: 2
+            MDTopAppBarTitle:
+                text: "Lister"
+            MDTopAppBarTrailingButtonContainer:
+                MDActionTopAppBarButton:
+                    icon: "eraser"
+                    on_release: root.reset_list()
+                MDActionTopAppBarButton:
+                    icon: "magnify"
+                    on_release: root.open_search_dialog()
+                MDActionTopAppBarButton:
+                    id: dots
+                    icon: "dots-vertical"
+                    on_release: root.main_menu_open(self)
+
             
         ScrollView:
             pos_hint: {'center_y': 0.5, "center_x": 0.5}
@@ -56,8 +68,7 @@ ScreenManager:
     id: list_of_items
     size_hint_y: None
     height: list_item.height
-    markup: True
-
+    type_swipe: "hand"
     MDCardSwipeLayerBox:
         padding: "8dp"
         MDIconButton:
@@ -76,18 +87,18 @@ ScreenManager:
             on_release: (root.archive_item(list_of_items), app.refresh_folder_view())
 
     MDCardSwipeFrontBox:
+        _no_ripple_effect: True
         MDListItem:
             id: list_item
-            on_release: root.on_release()
+            on_press: root.on_press()
             MDListItemHeadlineText:
                 id: headline
                 text: "Headline"
-
-        MDIconButton:
-            id: check
-            pos_hint: {"center_y": 0.5}
-            icon: "checkbox-blank-outline"
-            on_release: root.mark(check)
+            MDIconButton:
+                id: check
+                pos_hint: {"center_y": 0.5}
+                icon: "checkbox-blank-outline"
+                on_release: root.mark(check)
 
 <NewFieldForm>
     MDBoxLayout:
@@ -129,12 +140,29 @@ ScreenManager:
 
     MDBoxLayout:
         orientation: "vertical"
-
         MDTopAppBar:
             id: topbar
-            halign: "center"
-            right_action_items: [["eraser", lambda x: root.reset_list()],["magnify", lambda x: root.open_search_dialog()], ["dots-vertical", lambda x: root.menu_open(x)]]
+            type: "small"
             elevation: 2
+            MDTopAppBarTitle:
+                text: "Lister"
+            MDTopAppBarTrailingButtonContainer:
+                MDActionTopAppBarButton:
+                    icon: "eraser"
+                    on_release: root.reset_list()
+                MDActionTopAppBarButton:
+                    icon: "magnify"
+                    on_release: root.open_search_dialog()
+                MDActionTopAppBarButton:
+                    id: dots
+                    icon: "dots-vertical"
+                    on_release: root.menu_open(self)
+
+        #MDTopAppBar:
+        #    id: topbar
+        #    halign: "center"
+        #    right_action_items: [["eraser", lambda x: root.reset_list()],["magnify", lambda x: root.open_search_dialog()], ["dots-vertical", lambda x: root.menu_open(x)]]
+        #    elevation: 2
 
         MDBoxLayout:
             id: sort_layout
@@ -349,10 +377,18 @@ ScreenManager:
 
 
 <SearchDialog>:
-    size_hint: 0.5, None
-    orientation: "vertical"
-
-    MDTextField:
-        id: search_field
-        hint_text: "Search"
+    MDDialogContentContainer:
+        MDTextField:
+            id: search_field
+        MDTextFieldHintText:
+            hint_text: "Search"
+    MDDialogButtonContainer:
+        MDButton:
+            id: cancel_btn
+            MDButtonText:
+                text: "Cancel"
+        MDButton:
+            id: search_btn
+            MDButtonText:
+                text: "Search"
 
