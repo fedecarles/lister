@@ -5,24 +5,31 @@ import logging
 import csv
 import os
 
+from kivy.metrics import dp
 from kivy.uix.screenmanager import Screen
 from kivy.clock import mainthread
 from kivy.clock import Clock
+from kivy.uix.recycleview import RecycleView
+from kivy.uix.recycleboxlayout import RecycleBoxLayout
+from kivy.uix.recyclegridlayout import RecycleGridLayout
 
+from kivymd.uix.boxlayout import MDBoxLayout
+from kivymd.uix.label import MDLabel
 from kivymd.app import MDApp
 from kivymd.uix.list import (
     MDList,
     MDListItem,
     MDListItemHeadlineText,
 )
-from kivymd.uix.dialog import MDDialog
+from kivymd.uix.dialog import MDDialog, MDDialogSupportingText
 from kivymd.uix.menu import MDDropdownMenu
+from kivymd.uix.recycleview import MDRecycleView
 
 # from kivymd.uix.datatables import MDDataTable
 from kivymd.uix.button import MDIconButton
 
 
-from components.lists import ListOfItems
+from components.lists import ListOfItems, TableView
 from components.dialogs import SearchDialog
 from utils import (
     EXPORTS_PATH,
@@ -52,12 +59,14 @@ class ItemsScreen(Screen):
         self.sort_by = None
         self.columns = []
         self.dialog = None
+        self.counts = 0
+        self.md_list = MDList()
 
     @log_runtime
     def on_enter(self, *args):
         """Populates the list Items."""
         if self.title != self.ids.topbar.title:
-            self.ids.item_list.clear_widgets()  # on changing lists, clear widgets
+            self.ids.scroll_area.clear_widgets()  # on changing lists, clear widgets
             self.title = self.ids.topbar.title
         self.refresh_view()
 
@@ -65,7 +74,7 @@ class ItemsScreen(Screen):
     def refresh_view(self):
         """Refreshes the view based on the selected mode."""
         app = MDApp.get_running_app()
-        self.ids.item_list.clear_widgets()
+        self.ids.scroll_area.clear_widgets()
         if self.view == "list":
             self.populate_list_view(LIST_PATH)
         elif self.view == "table":
@@ -73,13 +82,11 @@ class ItemsScreen(Screen):
         elif self.view == "archive":
             self.populate_list_view(ARCHIVES_PATH)
 
-    @log_runtime
     def sort_dropdown(self, instance):
         """Creates the sort button dropdown values."""
         menu_items = [
             {
                 "text": f"{col}",
-                "viewclass": "OneLineListItem",
                 "on_release": lambda x=index, y=f"{col}": self.update_sort_btn_text(
                     instance, x, y
                 ),
@@ -106,6 +113,7 @@ class ItemsScreen(Screen):
     def populate_list_view(self, source: str):
         """Populates the list view."""
         self.ids.sort_layout.clear_widgets()
+        self.ids.scroll_area.clear_widgets()
 
         try:
             # Get the directory path and list all files
@@ -134,7 +142,8 @@ class ItemsScreen(Screen):
                     return None
 
             # Use ThreadPoolExecutor to process files in parallel
-            if len(self.ids.item_list.children) != len(sorted_files):
+            if self.counts != len(sorted_files):
+                self.md_list.clear_widgets()
                 with ThreadPoolExecutor() as executor:
                     items_data = sorted(
                         list(executor.map(process_file, sorted_files)),
@@ -143,15 +152,17 @@ class ItemsScreen(Screen):
 
                 # Schedule the update of UI elements on the main thread
                 Clock.schedule_once(lambda _: self.update_ui(items_data))
+            else:
+                self.ids.scroll_area.add_widget(self.md_list)
 
         except OSError:
-            MDDialog(text="No items to show.").open()
+            MDDialog(MDDialogSupportingText(text="No items to show.")).open()
 
     @log_runtime
     def update_ui(self, items_data):
         """Updates the UI with processed items data."""
 
-        self.ids.item_list.clear_widgets()
+        self.ids.scroll_area.clear_widgets()
         for item_data in items_data:
             item_row = ListOfItems()
             item_row.ids.headline.text = item_data["text"][:20]
@@ -172,7 +183,9 @@ class ItemsScreen(Screen):
                 item_row.ids.archive_btn.icon = "archive-outline"
                 item_row.ids.archive_btn.text_color = [50, 50, 0, 1]
 
-            self.ids.item_list.add_widget(item_row)
+            self.md_list.add_widget(item_row)
+        self.counts = len(self.md_list.children)
+        self.ids.scroll_area.add_widget(self.md_list)
 
     @log_runtime
     def populate_table_view(self):
@@ -191,28 +204,26 @@ class ItemsScreen(Screen):
         for file_path in os.listdir(os.path.join(LIST_PATH, self.title)):
             yaml_file_path = os.path.join(LIST_PATH, self.title, file_path)
             fl = open_yaml_file(yaml_file_path)
-            fl["File"] = yaml_file_path
+            # fl["File"] = yaml_file_path
             all_dicts.append(fl)
 
-        sort_cols = fl.copy()
-        try:
-            sort_cols.pop("File")
-        except KeyError:
-            pass
-        self.columns = sort_cols.keys()
+        table_header = [{"text": str(field)} for field in fl.keys()]
+        table_rows = [
+            {"text": str(item[field])} for item in all_dicts for field in item.keys()
+        ]
+        table_data = table_header + table_rows
 
         try:
-            header_data, row_data = dicts_to_table(all_dicts, self.sort_by)
-            data_table = MDDataTable(
-                column_data=header_data,
-                row_data=row_data,
-                rows_num=100,  # set high limit on rows diplayed
-                elevation=0,
-            )
-            data_table.bind(on_row_press=self.on_row_press)
-            self.ids.item_list.add_widget(data_table)
+            table_view = TableView()
+            table_view.data = table_data
+            table_view.ids.recycle_grid.cols = len(fl.keys())
+            self.ids.scroll_area.clear_widgets()
+            self.ids.scroll_area.add_widget(table_view)
+
         except IndexError as e:
-            MDDialog(text=f"Table could not be generated: {e}").open()
+            MDDialog(
+                MDDialogSupportingText(text=f"Table could not be generated: {e}")
+            ).open()
 
     @log_runtime
     def menu_open(self, topbar):
@@ -274,9 +285,13 @@ class ItemsScreen(Screen):
                 writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
                 writer.writeheader()
                 writer.writerows(data)
-            MDDialog(text="Data has been saved in the exports folder.").open()
+            MDDialog(
+                MDDialogSupportingText(
+                    text="Data has been saved in the exports folder."
+                )
+            ).open()
         except OSError as e:
-            MDDialog(text=f"Export failed: {e}").open()
+            MDDialog(MDDialogSupportingText(text=f"Export failed: {e}")).open()
 
     def on_row_press(self, _, row):
         """Update screen title."""
@@ -294,36 +309,10 @@ class ItemsScreen(Screen):
         change_screen("new_item_screen")
 
     @log_runtime
-    # pylint: disable=R0801
-    def open_search_dialog(self):
+    def search(self):
         """Opens the search dialog."""
-
-        if self.view == "table":
-            MDDialog(text="Search only works on list view.").open()
-            return
-
-        def search_callback(_):
-            search_text = self.dialog.content_cls.ids.search_field.text
-            search_results = [
-                item for item in self.md_list.children if search_text in item.text
-            ]
-
-            if search_results:
-                self.md_list.clear_widgets()
-                for item in search_results:
-                    self.md_list.add_widget(item)
-
-            self.dismiss_dialog(_)
-
-        self.dialog = SearchDialog()
-        self.dialog.open()
-
-    @log_runtime
-    # pylint: disable=R0801
-    def dismiss_dialog(self, _):
-        """Closes dialog."""
-        if self.dialog:
-            self.dialog.dismiss()
+        dialog = SearchDialog()
+        dialog.open_search_dialog(self.md_list)
 
     @log_runtime
     def reset_list(self):
@@ -333,7 +322,7 @@ class ItemsScreen(Screen):
         if self.view == "table":
             return
 
-        self.ids.item_list.remove_widget(self.md_list)
+        self.ids.scroll_area.clear_widgets()
         if self.view == "list":
             self.populate_list_view(LIST_PATH)
         elif self.view == "archive":

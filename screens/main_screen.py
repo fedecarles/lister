@@ -46,6 +46,10 @@ class MainScreen(Screen):
         )
         menu.open()
 
+    def search(self):
+        dialog = SearchDialog()
+        dialog.open_search_dialog(self.ids.list_container)
+
     def change_theme(self, _, theme):
         """Sets the app theme."""
         app = MDApp.get_running_app()
@@ -57,34 +61,34 @@ class MainScreen(Screen):
         save_to_yaml(os.path.join(ASSETS_PATH, "config.yaml"), theme_config)
 
     # pylint: disable=R0801
-    def open_search_dialog(self):
-        """Opens the search dialog."""
-        self.dialog = SearchDialog()
-        self.dialog.open()
+    # def open_search_dialog(self):
+    #    """Opens the search dialog."""
+    #    self.dialog = SearchDialog()
+    #    self.dialog.open()
 
-        def search_callback(_):
-            search_text = self.dialog.ids.search_field.text
-            search_results = [
-                item
-                for item in self.ids.list_container.children
-                if search_text in item.ids.list_name.text
-            ]
+    #    def search_callback(_):
+    #        search_text = self.dialog.ids.search_field.text
+    #        search_results = [
+    #            item
+    #            for item in self.ids.list_container.children
+    #            if search_text in item.ids.list_name.text
+    #        ]
 
-            if search_results:
-                self.ids.list_container.clear_widgets()
-                for item in search_results:
-                    self.ids.list_container.add_widget(item)
+    #        if search_results:
+    #            self.ids.list_container.clear_widgets()
+    #            for item in search_results:
+    #                self.ids.list_container.add_widget(item)
 
-            self.dismiss_dialog(_)
+    #        self.dismiss_dialog(_)
 
-        self.dialog.ids.cancel_btn.bind(on_release=lambda x: self.dismiss_dialog(x))
-        self.dialog.ids.search_btn.bind(on_release=search_callback)
+    #    self.dialog.ids.cancel_btn.bind(on_release=lambda x: self.dismiss_dialog(x))
+    #    self.dialog.ids.search_btn.bind(on_release=search_callback)
 
-    # pylint: disable=R0801
-    def dismiss_dialog(self, _):
-        """Closes dialog."""
-        if self.dialog:
-            self.dialog.dismiss()
+    ## pylint: disable=R0801
+    # def dismiss_dialog(self, _):
+    #    """Closes dialog."""
+    #    if self.dialog:
+    #        self.dialog.dismiss()
 
     def reset_list(self):
         """Resets to the full list view."""
@@ -93,5 +97,5 @@ class MainScreen(Screen):
 
         for list_item in folder_list:
             add_list = ListOfLists()
-            add_list.ids.list_name.text = list_item
+            add_list.ids.headline.text = list_item
             self.ids.list_container.add_widget(add_list)

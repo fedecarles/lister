@@ -63,7 +63,7 @@ class MainApp(MDApp):
         for list_item in new_folder_list:
             if list_item not in self.folder_list:
                 add_list = ListOfLists()
-                add_list.ids.list_name.text = list_item
+                add_list.ids.headline.text = list_item
                 screen.ids.list_container.add_widget(add_list)
                 self.folder_list.append(list_item)
             else:

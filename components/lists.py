@@ -3,6 +3,7 @@
 import os
 import shutil
 
+from kivy.uix.recycleview import RecycleView
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.card import MDCard
 from kivymd.uix.dialog import (
@@ -55,7 +56,7 @@ class ListOfLists(MDList):
     def on_release(self):
         """Sets the screen title to the item title."""
         title = get_screen_element("items_screen", "topbar")
-        title.title = self.ids.list_name.text
+        title.title = self.ids.headline.text
         change_screen("items_screen")
 
     def delete_list_dialog(self):
@@ -214,5 +215,10 @@ class NewFieldForm(MDList):
 
 
 class NewItemForm(MDBoxLayout):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+
+class TableView(RecycleView):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

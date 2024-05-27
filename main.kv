@@ -24,7 +24,7 @@ ScreenManager:
                     on_release: root.reset_list()
                 MDActionTopAppBarButton:
                     icon: "magnify"
-                    on_release: root.open_search_dialog()
+                    on_release: root.search()
                 MDActionTopAppBarButton:
                     id: dots
                     icon: "dots-vertical"
@@ -54,7 +54,7 @@ ScreenManager:
         id: list_of_list_item
         on_release: root.on_release()
         MDListItemHeadlineText:
-            id: list_name
+            id: headline
             text: "Headline"
 
         MDIconButton:
@@ -152,17 +152,11 @@ ScreenManager:
                     on_release: root.reset_list()
                 MDActionTopAppBarButton:
                     icon: "magnify"
-                    on_release: root.open_search_dialog()
+                    on_release: root.search()
                 MDActionTopAppBarButton:
                     id: dots
                     icon: "dots-vertical"
                     on_release: root.menu_open(self)
-
-        #MDTopAppBar:
-        #    id: topbar
-        #    halign: "center"
-        #    right_action_items: [["eraser", lambda x: root.reset_list()],["magnify", lambda x: root.open_search_dialog()], ["dots-vertical", lambda x: root.menu_open(x)]]
-        #    elevation: 2
 
         MDBoxLayout:
             id: sort_layout
@@ -170,12 +164,10 @@ ScreenManager:
             padding: [65, 0, 0, 0]
 
         ScrollView:
+            id: scroll_area
             pos_hint: {'center_y': 0.5, "center_x": 0.5}
             size_hint_x: 0.9
             spacing: 10
-
-            MDList:
-                id: item_list
 
         MDBoxLayout:
             size_hint: (.9, 0.25)
@@ -289,7 +281,6 @@ ScreenManager:
             pos_hint: {"center_y": 0.5}
 
 
-
 <TemplateCreateScreen>
     name: "template_create_screen"
     id: template_create_screen
@@ -380,8 +371,8 @@ ScreenManager:
     MDDialogContentContainer:
         MDTextField:
             id: search_field
-        MDTextFieldHintText:
-            hint_text: "Search"
+            MDTextFieldHintText:
+                text: "Search"
     MDDialogButtonContainer:
         MDButton:
             id: cancel_btn
@@ -391,4 +382,14 @@ ScreenManager:
             id: search_btn
             MDButtonText:
                 text: "Search"
+
+<TableView>:
+    viewclass: 'MDLabel'
+    RecycleGridLayout:
+        id: recycle_grid
+        cols: 4
+        default_size: None, dp(26)
+        default_size_hint: 1, None
+        size_hint_y: None
+        height: self.minimum_height
 

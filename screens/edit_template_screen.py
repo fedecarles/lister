@@ -3,7 +3,7 @@
 import os
 import yaml
 
-from kivymd.uix.dialog import MDDialog
+from kivymd.uix.dialog import MDDialog, MDDialogSupportingText
 from kivy.uix.screenmanager import Screen
 from utils import TEMPLATE_PATH, open_yaml_file, save_to_yaml
 
@@ -29,4 +29,4 @@ class EditTemplateScreen(Screen):
         new_template = self.ids.template_text.text
         new_yaml = yaml.safe_load(new_template)
         save_to_yaml(self.template_path, new_yaml)
-        MDDialog(text="Template saved.").open()
+        MDDialog(MDDialogSupportingText(text="Template saved.")).open()
