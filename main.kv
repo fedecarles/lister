@@ -145,6 +145,7 @@ ScreenManager:
             type: "small"
             elevation: 2
             MDTopAppBarTitle:
+                id: list_title
                 text: "Lister"
             MDTopAppBarTrailingButtonContainer:
                 MDActionTopAppBarButton:
@@ -185,7 +186,7 @@ ScreenManager:
                 text: "New"
                 icon: "pencil-outline"
                 icon_size: "30sp"
-                on_release: root.new_item(topbar.title) 
+                on_release: root.new_item(list_title.text) 
                 elevation: 2
                 gravity: "right"
                 pos_hint: {"center_y": 0.5}

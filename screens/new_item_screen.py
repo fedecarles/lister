@@ -50,6 +50,7 @@ class NewItemScreen(Screen):
 
         def on_ok(instance_date_picker):
             text_field.text = str(instance_date_picker.get_date()[0])
+            instance_date_picker.dismiss()
 
         date_picker.bind(on_ok=on_ok, on_cancel=on_cancel)
         if instance:

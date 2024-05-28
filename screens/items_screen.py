@@ -65,9 +65,8 @@ class ItemsScreen(Screen):
     @log_runtime
     def on_enter(self, *args):
         """Populates the list Items."""
-        if self.title != self.ids.topbar.title:
-            self.ids.scroll_area.clear_widgets()  # on changing lists, clear widgets
-            self.title = self.ids.topbar.title
+        self.ids.scroll_area.clear_widgets()  # on changing lists, clear widgets
+        self.title = self.ids.list_title.text
         self.refresh_view()
 
     @log_runtime
@@ -345,5 +344,5 @@ class ItemsScreen(Screen):
     def go_to_edit_template(self):
         """Displays the edit template view."""
         topbar = get_screen_element("edit_template_screen", "topbar")
-        topbar.title = self.ids.topbar.title
+        topbar.title = self.ids.list_title.text
         self.manager.current = "edit_template_screen"

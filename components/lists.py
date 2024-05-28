@@ -55,8 +55,8 @@ class ListOfLists(MDList):
 
     def on_release(self):
         """Sets the screen title to the item title."""
-        title = get_screen_element("items_screen", "topbar")
-        title.title = self.ids.headline.text
+        title = get_screen_element("items_screen", "list_title")
+        title.text = self.ids.headline.text
         change_screen("items_screen")
 
     def delete_list_dialog(self):
@@ -77,9 +77,9 @@ class ListOfLists(MDList):
     def delete_folder(self, _):
         """Deletes the list folder and all files."""
         list_name = get_screen_element("items_screen", "topbar")
-        list_name.text = self.ids.list_name.text
-        template_file = os.path.join(TEMPLATE_PATH, f"{self.ids.list_name.text}.yaml")
-        list_dir = os.path.join(LIST_PATH, f"{self.ids.list_name.text}/")
+        list_name.text = self.ids.headline.text
+        template_file = os.path.join(TEMPLATE_PATH, f"{self.ids.headline.text}.yaml")
+        list_dir = os.path.join(LIST_PATH, f"{self.ids.headline.text}/")
         try:
             shutil.rmtree(list_dir)
             os.remove(template_file)
