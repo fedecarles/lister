@@ -26,7 +26,7 @@ from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.recycleview import MDRecycleView
 
 # from kivymd.uix.datatables import MDDataTable
-from kivymd.uix.button import MDIconButton
+from kivymd.uix.button import MDButton, MDButtonText, MDButtonIcon
 
 
 from components.lists import ListOfItems, TableView
@@ -58,9 +58,9 @@ class ItemsScreen(Screen):
         self.view = "list"
         self.sort_by = None
         self.columns = []
-        self.dialog = None
         self.counts = 0
         self.md_list = MDList()
+        self.reverse = False
 
     @log_runtime
     def on_enter(self, *args):
@@ -106,7 +106,8 @@ class ItemsScreen(Screen):
     def update_sort_btn_text(self, caller_btn, index, col):
         """Updates the sort button dropdown value."""
         caller_btn.text = col
-        self.sort_by = index
+        caller_btn.children[1].text = col  # button text
+        self.sort_by = col
         self.refresh_view()
 
     @log_runtime
@@ -194,9 +195,9 @@ class ItemsScreen(Screen):
         fl = {}
 
         if not self.ids.sort_layout.children:
-            sort_btn = MDIconButton(
-                text="Sort",
-                icon="sort",
+            sort_btn = MDButton(
+                MDButtonText(text="Sort"),
+                MDButtonIcon(icon="sort"),
                 on_release=self.sort_dropdown,
             )
             self.ids.sort_layout.add_widget(sort_btn)
@@ -204,8 +205,20 @@ class ItemsScreen(Screen):
         for file_path in os.listdir(os.path.join(LIST_PATH, self.title)):
             yaml_file_path = os.path.join(LIST_PATH, self.title, file_path)
             fl = open_yaml_file(yaml_file_path)
-            # fl["File"] = yaml_file_path
             all_dicts.append(fl)
+
+        sort_cols = fl.copy()
+        self.columns = sort_cols.keys()  # collect column names for dropdown
+
+        if not self.reverse:
+            self.reverse = True
+        else:
+            self.reverse = False
+
+        if self.sort_by:
+            all_dicts = sorted(
+                all_dicts, key=lambda x: x[self.sort_by], reverse=self.reverse
+            )
 
         table_header = [{"text": str(field)} for field in fl.keys()]
         table_rows = [
@@ -216,7 +229,7 @@ class ItemsScreen(Screen):
         try:
             table_view = TableView()
             table_view.data = table_data
-            table_view.ids.recycle_grid.cols = len(fl.keys())
+            table_view.ids.recycle_grid.cols = len(self.columns)
             self.ids.scroll_area.clear_widgets()
             self.ids.scroll_area.add_widget(table_view)
 
