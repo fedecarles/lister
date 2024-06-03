@@ -65,11 +65,21 @@ class ListOfLists(MDList):
             MDDialogSupportingText(text="This will remove all items under this lists."),
             MDDialogContentContainer(
                 MDButton(
-                    MDButtonText(text="Delete"),
-                    md_bg_color="red",
+                    MDButtonText(
+                        text="Delete", theme_text_color="Custom", text_color="1f2335"
+                    ),
+                    theme_bg_color="Custom",
+                    md_bg_color="ff757f",
                     on_release=self.delete_folder,
                 ),
-                MDButton(MDButtonText(text="Cancel"), on_release=self.close_dialog),
+                MDButton(
+                    MDButtonText(
+                        text="Cancel", theme_text_color="Custom", text_color="1f2335"
+                    ),
+                    theme_bg_color="Custom",
+                    md_bg_color="7aa2f7",
+                    on_release=self.close_dialog,
+                ),
             ),
         )
         self.dialog.open()
@@ -100,6 +110,7 @@ class ListOfItems(MDCardSwipe):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.yaml_path = ""
+        self.checked = False
 
     def mark(self, check):
         """Check/Uncheck item"""
@@ -129,10 +140,10 @@ class ListOfItems(MDCardSwipe):
         os.remove(f"{self.yaml_path}")
         self.parent.remove_widget(list_of_items)
 
-    def archive_item(self, list_of_items):
+    def archive_item(self):
         """Moves item to archives."""
 
-        list_name = get_screen_element("items_screen", "topbar").title
+        list_name = get_screen_element("items_screen", "list_title").text
         source_file = os.path.join(self.yaml_path)
         destination_path = ""
 
@@ -147,7 +158,7 @@ class ListOfItems(MDCardSwipe):
 
         try:
             shutil.move(source_file, destination_path)
-            self.parent.remove_widget(list_of_items)
+            self.parent.remove_widget(self)
         except OSError as e:
             MDDialog(text=f"File could not be moved: {e}")
 

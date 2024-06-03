@@ -58,8 +58,7 @@ class ItemsScreen(Screen):
         self.view = "list"
         self.sort_by = None
         self.columns = []
-        self.counts = 0
-        self.md_list = MDList()
+        self.md_list = MDList(spacing="12dp")
         self.reverse = False
 
     @log_runtime
@@ -72,7 +71,6 @@ class ItemsScreen(Screen):
     @log_runtime
     def refresh_view(self):
         """Refreshes the view based on the selected mode."""
-        app = MDApp.get_running_app()
         self.ids.scroll_area.clear_widgets()
         if self.view == "list":
             self.populate_list_view(LIST_PATH)
@@ -104,21 +102,16 @@ class ItemsScreen(Screen):
     @log_runtime
     def update_sort_btn_text(self, caller_btn, index, col):
         """Updates the sort button dropdown value."""
-        caller_btn.text = col
-        caller_btn.children[1].text = col  # button text
         self.sort_by = col
         self.refresh_view()
 
     @log_runtime
     def populate_list_view(self, source: str):
         """Populates the list view."""
-        self.ids.sort_layout.clear_widgets()
-        self.ids.scroll_area.clear_widgets()
 
         try:
             # Get the directory path and list all files
             directory_path = os.path.join(source, self.title)
-            # files = os.listdir(directory_path)
             with os.scandir(directory_path) as entries:
                 files = [entry.name for entry in entries if entry.is_file()]
             sorted_files = sort_files_by_datetime(files)
@@ -142,7 +135,7 @@ class ItemsScreen(Screen):
                     return None
 
             # Use ThreadPoolExecutor to process files in parallel
-            if self.counts != len(sorted_files):
+            if len(self.md_list.children) != len(sorted_files):
                 self.md_list.clear_widgets()
                 with ThreadPoolExecutor() as executor:
                     items_data = sorted(
@@ -165,26 +158,16 @@ class ItemsScreen(Screen):
         self.ids.scroll_area.clear_widgets()
         for item_data in items_data:
             item_row = ListOfItems()
-            item_row.ids.headline.text = item_data["text"][:20]
+            item_row.ids.headline.text = item_data["text"][:40]
             item_row.yaml_path = item_data["secondary_text"]
 
-            # Ensure backward compatibility by adding 'checked' field if missing
             if item_data["checked"]:
                 item_row.ids.check.icon = "checkbox-marked-outline"
-                item_row.text = f"[s]{item_row.ids.headline.text}[/s]"
+                item_row.ids.headline.text = f"[s]{item_row.ids.headline.text}[/s]"
             else:
                 item_row.ids.check.icon = "checkbox-blank-outline"
 
-            ## Change inbox/archive icons
-            if item_data["source"] == ARCHIVES_PATH:
-                item_row.ids.archive_btn.icon = "inbox-outline"
-                item_row.ids.archive_btn.text_color = [0, 1, 0, 1]
-            else:
-                item_row.ids.archive_btn.icon = "archive-outline"
-                item_row.ids.archive_btn.text_color = [50, 50, 0, 1]
-
             self.md_list.add_widget(item_row)
-        self.counts = len(self.md_list.children)
         self.ids.scroll_area.add_widget(self.md_list)
 
     @log_runtime
@@ -192,14 +175,6 @@ class ItemsScreen(Screen):
         """Populates the table view."""
         all_dicts = []
         fl = {}
-
-        if not self.ids.sort_layout.children:
-            sort_btn = MDButton(
-                MDButtonText(text="Sort"),
-                MDButtonIcon(icon="sort"),
-                on_release=self.sort_dropdown,
-            )
-            self.ids.sort_layout.add_widget(sort_btn)
 
         for file_path in os.listdir(os.path.join(LIST_PATH, self.title)):
             yaml_file_path = os.path.join(LIST_PATH, self.title, file_path)
@@ -258,7 +233,11 @@ class ItemsScreen(Screen):
                 "on_release": lambda _="edit": self.go_to_edit_template(),
             },
             {
-                "text": "Archive",
+                "text": "Move to Archive/Inbox",
+                "on_release": lambda x="archive": self.move_to_archive(),
+            },
+            {
+                "text": "View Archive",
                 "on_release": lambda x="archive": self.update_view(topbar, x),
             },
         ]
@@ -305,14 +284,6 @@ class ItemsScreen(Screen):
         except OSError as e:
             MDDialog(MDDialogSupportingText(text=f"Export failed: {e}")).open()
 
-    def on_row_press(self, _, row):
-        """Update screen title."""
-        _, end_index = row.table.recycle_data[row.index]["range"]
-        file_path = row.table.recycle_data[end_index]["text"]
-        title_element = get_screen_element("view_item_screen", "item_title")
-        title_element.text = file_path.replace(".yaml", "")
-        change_screen("view_item_screen")
-
     @log_runtime
     def new_item(self, item):
         """Moves to the New Template screen"""
@@ -329,16 +300,11 @@ class ItemsScreen(Screen):
     @log_runtime
     def reset_list(self):
         """Resets the items view."""
-
         # for table view, ignore reset
         if self.view == "table":
             return
-
         self.ids.scroll_area.clear_widgets()
-        if self.view == "list":
-            self.populate_list_view(LIST_PATH)
-        elif self.view == "archive":
-            self.populate_list_view(ARCHIVES_PATH)
+        self.refresh_view()
 
     @log_runtime
     def go_to_edit_template(self):
@@ -346,3 +312,22 @@ class ItemsScreen(Screen):
         topbar = get_screen_element("edit_template_screen", "topbar")
         topbar.title = self.ids.list_title.text
         self.manager.current = "edit_template_screen"
+
+    @log_runtime
+    def move_to_archive(self):
+        items_to_remove = []
+        if self.view == "list":
+            items_to_remove = [
+                item
+                for item in self.md_list.children
+                if item.ids.check.icon == "checkbox-marked-outline"
+            ]
+        elif self.view == "archive":
+            items_to_remove = [
+                item
+                for item in self.md_list.children
+                if item.ids.check.icon == "checkbox-blank-outline"
+            ]
+        for item in items_to_remove:
+            item.archive_item()
+        self.refresh_view()

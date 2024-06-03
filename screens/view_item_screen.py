@@ -28,23 +28,22 @@ class ViewItemScreen(NewItemScreen):
         yaml_file_path = f"{self.ids.item_title.text}.yaml"
         item_dict = open_yaml_file(yaml_file_path)
 
-        placeholder = MDBoxLayout(
-            orientation="vertical",
-            size_hint_y=None,
-            adaptive_height=True,
-        )
+        # placeholder = MDBoxLayout(
+        #    orientation="vertical",
+        #    size_hint_y=None,
+        #    adaptive_height=True,
+        # )
 
         for key, value in item_dict.items():
             if key == "checked":
                 add_field = MDCheckbox(active=value, disabled=True)
             else:
                 add_field = MDTextField(
-                    MDTextFieldHelperText(text=key, mode="persistent"), mode="filled"
+                    MDTextFieldHelperText(text=key, mode="persistent"),
+                    mode="outlined",
                 )
                 add_field.text = value
-            placeholder.add_widget(add_field)
-
-        self.ids.added_items.add_widget(placeholder)
+            self.ids.added_items.add_widget(add_field)
 
     def on_save(self):
         """Saves the changes in the field values to the same yaml."""

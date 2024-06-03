@@ -8,9 +8,6 @@ from kivymd.uix.dialog import MDDialog
 class SearchDialog(MDDialog):
     """Search dialog box."""
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
     def open_search_dialog(self, container):
         """Opens the search dialog."""
         self.container = container

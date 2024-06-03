@@ -9,13 +9,16 @@ ScreenManager:
 <MainScreen>
     name: "main_screen"
     id: listar
+
     MDBoxLayout:
         orientation: "vertical"
-
+        theme_bg_color: "Custom"
+        md_bg_color: "242c50"
         MDTopAppBar:
             id: topbar
             type: "small"
-            elevation: 2
+            theme_bg_color: "Custom"
+            md_bg_color: "3b435f"
             MDTopAppBarTitle:
                 text: "Lister"
             MDTopAppBarTrailingButtonContainer:
@@ -25,12 +28,6 @@ ScreenManager:
                 MDActionTopAppBarButton:
                     icon: "magnify"
                     on_release: root.search()
-                MDActionTopAppBarButton:
-                    id: dots
-                    icon: "dots-vertical"
-                    on_release: root.main_menu_open(self)
-
-            
         ScrollView:
             pos_hint: {'center_y': 0.5, "center_x": 0.5}
             size_hint_x: 0.9
@@ -40,10 +37,10 @@ ScreenManager:
                 id: list_container
    
     MDFabButton:
-        icon: "plus-thick"
         id: menu_btn
-        on_release: root.manager.current = "template_create_screen"
+        icon: "plus-thick"
         pos_hint: {'center_x': .85, 'center_y': .1}
+        on_release: root.manager.current = "template_create_screen"
     
 
 <ListOfLists>
@@ -53,14 +50,19 @@ ScreenManager:
     MDListItem:
         id: list_of_list_item
         on_release: root.on_release()
+        theme_bg_color: "Custom"
+        md_bg_color: "3d5189"
+
         MDListItemHeadlineText:
             id: headline
             text: "Headline"
+            theme_text_color: "Custom"
+            text_color: "c0cbf4"
 
         MDIconButton:
             icon: "trash-can-outline"
             theme_text_color: "Custom"
-            text_color: 1, 0, 0, 1
+            text_color: "dc747d"
             on_release: (root.delete_list_dialog(), app.refresh_folder_view())
 
 
@@ -69,31 +71,42 @@ ScreenManager:
     size_hint_y: None
     height: list_item.height
     type_swipe: "hand"
+    radius: 24
+    on_swipe_complete: (root.delete_item(list_of_items), app.refresh_folder_view())
+
     MDCardSwipeLayerBox:
         padding: "8dp"
-        MDIconButton:
-            pos_hint: {"center_y": 0.5}
-            icon: "trash-can-outline"
-            theme_text_color: "Custom"
-            text_color: 1, 0, 0, 1
-            on_release: (root.delete_item(list_of_items), app.refresh_folder_view())
+        radius: 24
+        size_hint_x: 0.5
 
         MDIconButton:
-            id: archive_btn
             pos_hint: {"center_y": 0.5}
-            icon: "archive-outline"
             theme_text_color: "Custom"
-            text_color: 50, 50, 0, 1
-            on_release: (root.archive_item(list_of_items), app.refresh_folder_view())
+            text_color: "e1747e"
+            icon: "trash-can-outline"
 
     MDCardSwipeFrontBox:
         _no_ripple_effect: True
-        MDListItem:
+        radius: 24
+        MDCard:
+            theme_bg_color: "Custom"
+            md_bg_color: "566298"
+            radius: 24
             id: list_item
-            on_press: root.on_press()
+            adaptive_height: True
+            spacing: "10dp"
+            padding: "10dp"
             MDListItemHeadlineText:
                 id: headline
                 text: "Headline"
+                pos_hint: {"center_y": 0.5}
+            MDIconButton:
+                id: view
+                pos_hint: {"center_y": 0.5}
+                icon: "pencil-outline"
+                on_release: root.on_press()
+                theme_text_color: "Custom"
+                text_color: "a9b1d6"
             MDIconButton:
                 id: check
                 pos_hint: {"center_y": 0.5}
@@ -137,17 +150,23 @@ ScreenManager:
 <ItemsScreen>
     name: "items_screen"
     id: items_screen
-
     MDBoxLayout:
         orientation: "vertical"
+        theme_bg_color: "Custom"
+        md_bg_color: "242c50"
+
         MDTopAppBar:
             id: topbar
             type: "small"
-            elevation: 2
+            theme_bg_color: "Custom"
+            md_bg_color: "3b435f"
             MDTopAppBarTitle:
                 id: list_title
                 text: "Lister"
             MDTopAppBarTrailingButtonContainer:
+                MDActionTopAppBarButton:
+                    icon: "sort"
+                    on_release: root.sort_dropdown(self)
                 MDActionTopAppBarButton:
                     icon: "eraser"
                     on_release: root.reset_list()
@@ -159,11 +178,6 @@ ScreenManager:
                     icon: "dots-vertical"
                     on_release: root.menu_open(self)
 
-        MDBoxLayout:
-            id: sort_layout
-            size_hint_y: 0.1
-            padding: [65, 0, 0, 0]
-
         ScrollView:
             id: scroll_area
             pos_hint: {'center_y': 0.5, "center_x": 0.5}
@@ -171,115 +185,123 @@ ScreenManager:
             spacing: 10
 
         MDBoxLayout:
-            size_hint: (.9, 0.25)
+            size_hint: (.9, 0.10)
             pos_hint: {'center_y': 0.5, "center_x": 0.5}
             MDIconButton:
-                text: "Back"
                 icon: "backspace"
-                icon_size: "30sp"
                 on_release: root.manager.current = 'main_screen'
                 elevation: 2
                 gravity: "left"
                 pos_hint: {"center_y": 0.5}
+                them_icon_color: "Custom"
+                icon_color: "a8b0d7"
             Widget:
             MDIconButton:
-                text: "New"
                 icon: "pencil-outline"
-                icon_size: "30sp"
                 on_release: root.new_item(list_title.text) 
                 elevation: 2
                 gravity: "right"
                 pos_hint: {"center_y": 0.5}
+                them_icon_color: "Custom"
+                icon_color: "a8b0d7"
 
 
 <NewItemScreen>
     name: "new_item_screen"
     id: new_item
-
-    MDLabel:
-        id: item_title
-        halign: "center"
-        font_size: dp(24)
-        markup: True
-        pos_hint: {"y": 0.45}
-
-    ScrollView:
-        pos_hint: {'top': 0.5 + 0.8/2}
-        MDBoxLayout:
-            orientation: "vertical"
-            spacing: dp(20)
-            padding: dp(20)
-            adaptive_height:True
-            size_hint_y: None
-            id: added_items
-
     MDBoxLayout:
-        size_hint: (.9, 0.25)
-        pos_hint: {'center_y': 0.1, "center_x": 0.5}
-        MDIconButton:
-            text: "Back"
-            icon: "backspace"
-            icon_size: "30sp"
-            on_release: root.manager.current = 'items_screen'
-            gravity: "left"
-            pos_hint: {"center_y": 0.5}
-        Widget:
-        MDIconButton:
-            text: "Save"
-            icon: "content-save"
-            icon_size: "30sp"
-            on_release: root.on_save()
-            gravity: "right"
-            pos_hint: {"center_y": 0.5}
-   
+        orientation: "vertical"
+        theme_bg_color: "Custom"
+        md_bg_color: "242c50"
+        MDLabel:
+            id: item_title
+            halign: "center"
+            font_style: "Title"
+            pos_hint: {"center_y": 0.95}
+            adaptive_height: True
+
+        ScrollView:
+            pos_hint: {'top': 0.5 + 0.8/2}
+            MDBoxLayout:
+                orientation: "vertical"
+                spacing: dp(20)
+                padding: dp(20)
+                adaptive_height:True
+                size_hint_y: None
+                id: added_items
+
+        MDBoxLayout:
+            size_hint: (.9, 0.10)
+            pos_hint: {'center_y': 0.1, "center_x": 0.5}
+            MDIconButton:
+                icon: "backspace"
+                size_hint: None, None
+                gravity: "left"
+                pos_hint: {"center_y": 0.5}
+                them_icon_color: "Custom"
+                icon_color: "a8b0d7"
+                on_release: root.manager.current = 'items_screen'
+            Widget:
+            MDIconButton:
+                icon: "content-save"
+                gravity: "right"
+                pos_hint: {"center_y": 0.5}
+                theme_text_color: "Custom"
+                text_color: "a8b0d7"
+                on_release: root.on_save()
+  
     
 
 <ViewItemScreen>
     name: "view_item_screen"
     orientation: "vertical"
     id: view_item
-
-    MDLabel:
-        id: item_title
-        halign: "center"
-        opacity: 0
-        pos_hint: {"y": 0.45}
-
-    MDLabel:
-        id: display_title
-        halign: "center"
-        font_size: dp(24)
-        markup: True
-        pos_hint: {"y": 0.45}
-
-    ScrollView:
-        pos_hint: {'top': 0.5 + 0.8/2}
-        MDBoxLayout:
-            orientation: "vertical"
-            adaptive_height:True
-            size_hint_y: None
-            padding: dp(20)
-            spacing: dp(20)
-            id: added_items
-
     MDBoxLayout:
-        size_hint: (.9, 0.25)
-        pos_hint: {'center_y': 0.1, "center_x": 0.5}
-        MDIconButton:
-            text: "Back"
-            icon: "backspace"
-            icon_size: "30sp"
-            on_release: root.manager.current = 'items_screen'
-            gravity: "left"
-            pos_hint: {"center_y": 0.5}
-        Widget:
-        MDIconButton:
-            text: "Save"
-            icon: "content-save"
-            icon_size: "30sp"
-            on_release: root.on_save()
-            gravity: "right"
-            pos_hint: {"center_y": 0.5}
+        orientation: "vertical"
+        theme_bg_color: "Custom"
+        md_bg_color: "242c50"
+        MDLabel:
+            id: item_title
+            halign: "center"
+            pos_hint: {"center_y": 0.95}
+            adaptive_height: True
+            opacity: 0
+
+        MDLabel:
+            id: display_title
+            halign: "center"
+            font_style: "Title"
+            pos_hint: {"y": 0.95}
+            adaptive_height: True
+
+        ScrollView:
+            pos_hint: {'top': 0.5 + 0.8/2}
+            MDBoxLayout:
+                orientation: "vertical"
+                adaptive_height:True
+                size_hint_y: None
+                padding: dp(20)
+                spacing: dp(20)
+                id: added_items
+
+        MDBoxLayout:
+            size_hint: (.9, 0.10)
+            pos_hint: {'center_y': 0.1, "center_x": 0.5}
+            MDIconButton:
+                icon: "backspace"
+                on_release: root.manager.current = 'items_screen'
+                gravity: "left"
+                pos_hint: {"center_y": 0.5}
+                them_icon_color: "Custom"
+                icon_color: "a8b0d7"
+            Widget:
+            MDIconButton:
+                icon: "content-save"
+                on_release: root.on_save()
+                gravity: "right"
+                pos_hint: {"center_y": 0.5}
+                them_icon_color: "Custom"
+                icon_color: "a8b0d7"
 
 
 <TemplateCreateScreen>
@@ -289,6 +311,8 @@ ScreenManager:
     MDBoxLayout:
         orientation: "horizontal"
         padding: [20, 20, 20, 20]
+        theme_bg_color: "Custom"
+        md_bg_color: "242c50"
 
         MDTextField:
             pos_hint: {"top": 0.9}
@@ -313,20 +337,21 @@ ScreenManager:
         size_hint: (.9, 0.25)
         pos_hint: {'center_y': 0.1, "center_x": 0.5}
         MDIconButton:
-            text: "Back"
             icon: "backspace"
-            icon_size: "30sp"
             on_release: root.manager.current = "main_screen"
             gravity: "left"
             pos_hint: {"center_y": 0.5}
+            them_icon_color: "Custom"
+            icon_color: "a8b0d7"
+
         Widget:
         MDIconButton:
-            text: "Save"
             icon: "content-save"
-            icon_size: "30sp"
             on_release: (root.on_save(), app.refresh_folder_view())
             gravity: "right"
             pos_hint: {"center_y": 0.5}
+            them_icon_color: "Custom"
+            icon_color: "a8b0d7"
 
 <EditTemplateScreen>
     name: "edit_template_screen"
@@ -334,11 +359,14 @@ ScreenManager:
 
     MDBoxLayout:
         orientation: "vertical"
+        theme_bg_color: "Custom"
+        md_bg_color: "242c50"
 
         MDTopAppBar:
             id: topbar
             halign: "center"
-            elevation: 2
+            theme_bg_color: "Custom"
+            md_bg_color: "3b435f"
 
         MDTextField:
             id: template_text
@@ -352,21 +380,20 @@ ScreenManager:
         size_hint: (.9, 0.25)
         pos_hint: {'center_y': 0.1, "center_x": 0.5}
         MDIconButton:
-            text: "Back"
             icon: "backspace"
-            icon_size: "30sp"
             on_release: root.manager.current = "main_screen"
             gravity: "left"
             pos_hint: {"center_y": 0.5}
+            them_icon_color: "Custom"
+            icon_color: "a8b0d7"
         Widget:
         MDIconButton:
-            text: "Save"
             icon: "content-save"
-            icon_size: "30sp"
             on_release: root.on_save()
             gravity: "right"
             pos_hint: {"center_y": 0.5}
-
+            them_icon_color: "Custom"
+            icon_color: "a8b0d7"
 
 <SearchDialog>:
     MDDialogContentContainer:
@@ -377,11 +404,19 @@ ScreenManager:
     MDDialogButtonContainer:
         MDButton:
             id: cancel_btn
+            theme_bg_color: "Custom"
+            md_bg_color: "ff757f"
             MDButtonText:
+                theme_text_color: "Custom"
+                text_color: "1f2335"
                 text: "Cancel"
         MDButton:
             id: search_btn
+            theme_bg_color: "Custom"
+            md_bg_color: "7aa2f7"
             MDButtonText:
+                theme_text_color: "Custom"
+                text_color: "1f2335"
                 text: "Search"
 
 <TableView>:

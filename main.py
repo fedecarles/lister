@@ -118,9 +118,7 @@ class MainApp(MDApp):
     def build(self):
         """Build app theme and screens"""
         self.create_dirs()
-        self.theme_cls.theme_style = CONFIG["theme"]
-        self.theme_cls.primary_palette = "Aquamarine"
-        # self.theme_cls.primary_hue = "200"
+        self.theme_cls.theme_style = "Dark"
 
         sm = ScreenManager()
         sm.add_widget(MainScreen(name="main_screen"))
