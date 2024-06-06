@@ -4,7 +4,7 @@ import os
 
 from kivy.uix.screenmanager import Screen
 
-from kivymd.uix.dialog import MDDialog
+from kivymd.uix.dialog import MDDialog, MDDialogSupportingText
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.button import MDButton, MDButtonText
 from kivymd.uix.menu import MDDropdownMenu
@@ -47,16 +47,25 @@ class TemplateCreateScreen(Screen):
 
         # Handle some commor errors.
         if not md_boxlayouts.children:
-            MDDialog(text="Please add at least one field before saving.").open()
+            MDDialog(
+                MDDialogSupportingText(
+                    text="Please add at least one filed before saving."
+                )
+            ).open()
             return
 
         template_name = str(self.ids.list_name.text)
         if not template_name:
-            MDDialog(text="Please enter a template name.").open()
+            MDDialog(
+                MDDialogSupportingText(text="Please enter a template name.")
+            ).open()
+
             return
 
         if template_name in folder_list:
-            MDDialog(text="A Template already exists with that name.").open()
+            MDDialog(
+                MDDialogSupportingText(text="A Template already exists with than name.")
+            ).open()
             return
 
         for widget in md_boxlayouts.children:
@@ -86,4 +95,6 @@ class TemplateCreateScreen(Screen):
             os.makedirs(LIST_PATH + self.ids.list_name.text, exist_ok=True)
             change_screen("main_screen")
         except OSError as e:
-            MDDialog(text=f"Error saving Template: {str(e)}").open()
+            MDDialog(
+                MDDialogSupportingText(text=f"Error saving Template: {str(e)}.")
+            ).open()

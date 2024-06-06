@@ -131,4 +131,6 @@ class NewItemScreen(Screen):
             save_to_yaml(yaml_file_path, mapped_values)
             change_screen("items_screen")
         except OSError as e:
-            MDDialog(text=f"Error saving note: {str(e)}.").open()
+            MDDialog(
+                MDDialogSupportingText(text=f"Error saving note: {str(e)}.")
+            ).open()

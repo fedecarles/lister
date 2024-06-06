@@ -30,11 +30,12 @@ from kivymd.uix.button import MDButton, MDButtonText, MDButtonIcon
 
 
 from components.lists import ListOfItems, TableView
-from components.dialogs import SearchDialog
+from components.dialogs import SearchDialog, RenameDialog
 from utils import (
     EXPORTS_PATH,
     LIST_PATH,
     ARCHIVES_PATH,
+    TEMPLATE_PATH,
     change_screen,
     dicts_to_table,
     get_screen_element,
@@ -65,7 +66,7 @@ class ItemsScreen(Screen):
     def on_enter(self, *args):
         """Populates the list Items."""
         self.ids.scroll_area.clear_widgets()  # on changing lists, clear widgets
-        self.title = self.ids.list_title.text
+        # self.title = self.ids.list_title.text
         self.refresh_view()
 
     @log_runtime
@@ -111,7 +112,7 @@ class ItemsScreen(Screen):
 
         try:
             # Get the directory path and list all files
-            directory_path = os.path.join(source, self.title)
+            directory_path = os.path.join(source, self.ids.list_title.text)
             with os.scandir(directory_path) as entries:
                 files = [entry.name for entry in entries if entry.is_file()]
             sorted_files = sort_files_by_datetime(files)
@@ -135,7 +136,9 @@ class ItemsScreen(Screen):
                     return None
 
             # Use ThreadPoolExecutor to process files in parallel
-            if len(self.md_list.children) != len(sorted_files):
+            if (len(self.md_list.children) != len(sorted_files)) or (
+                self.ids.list_title.text != self.title
+            ):
                 self.md_list.clear_widgets()
                 with ThreadPoolExecutor() as executor:
                     items_data = sorted(
@@ -145,6 +148,7 @@ class ItemsScreen(Screen):
 
                 # Schedule the update of UI elements on the main thread
                 Clock.schedule_once(lambda _: self.update_ui(items_data))
+                self.title = self.ids.list_title.text
             else:
                 self.ids.scroll_area.add_widget(self.md_list)
 
@@ -176,8 +180,10 @@ class ItemsScreen(Screen):
         all_dicts = []
         fl = {}
 
-        for file_path in os.listdir(os.path.join(LIST_PATH, self.title)):
-            yaml_file_path = os.path.join(LIST_PATH, self.title, file_path)
+        for file_path in os.listdir(os.path.join(LIST_PATH, self.ids.list_title.text)):
+            yaml_file_path = os.path.join(
+                LIST_PATH, self.ids.list_title.text, file_path
+            )
             fl = open_yaml_file(yaml_file_path)
             all_dicts.append(fl)
 
@@ -226,7 +232,9 @@ class ItemsScreen(Screen):
             },
             {
                 "text": "Export Data",
-                "on_release": lambda _="export": self.export_data(self.title),
+                "on_release": lambda _="export": self.export_data(
+                    self.ids.list_title.text
+                ),
             },
             {
                 "text": "Edit Template",
@@ -239,6 +247,10 @@ class ItemsScreen(Screen):
             {
                 "text": "View Archive",
                 "on_release": lambda x="archive": self.update_view(topbar, x),
+            },
+            {
+                "text": "Rename List",
+                "on_release": lambda x="rename": self.rename_list(),
             },
         ]
         menu = MDDropdownMenu(
@@ -258,8 +270,10 @@ class ItemsScreen(Screen):
     def export_data(self, list_name):
         """Exports list data to csv."""
         data = []
-        for file_path in os.listdir(os.path.join(LIST_PATH, self.title)):
-            yaml_file_path = os.path.join(LIST_PATH, self.title, file_path)
+        for file_path in os.listdir(os.path.join(LIST_PATH, self.ids.list_title.text)):
+            yaml_file_path = os.path.join(
+                LIST_PATH, self.ids.list_title.text, file_path
+            )
             fl = open_yaml_file(yaml_file_path)
             fl["File"] = yaml_file_path
             data.append(fl)
@@ -297,6 +311,11 @@ class ItemsScreen(Screen):
         dialog = SearchDialog()
         dialog.open_search_dialog(self.md_list)
 
+    def rename(self):
+        """Opens the search dialog."""
+        dialog = RenameDialog()
+        dialog.open_rename_dialog()
+
     @log_runtime
     def reset_list(self):
         """Resets the items view."""
@@ -309,8 +328,8 @@ class ItemsScreen(Screen):
     @log_runtime
     def go_to_edit_template(self):
         """Displays the edit template view."""
-        topbar = get_screen_element("edit_template_screen", "topbar")
-        topbar.title = self.ids.list_title.text
+        topbar_title = get_screen_element("edit_template_screen", "list_title")
+        topbar_title.text = self.ids.list_title.text
         self.manager.current = "edit_template_screen"
 
     @log_runtime
@@ -331,3 +350,9 @@ class ItemsScreen(Screen):
         for item in items_to_remove:
             item.archive_item()
         self.refresh_view()
+
+    def rename_list(self):
+        dialog = RenameDialog()
+        dialog.open_rename_dialog(
+            self.ids.list_title, TEMPLATE_PATH, LIST_PATH, ARCHIVES_PATH
+        )

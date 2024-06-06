@@ -17,9 +17,8 @@ class EditTemplateScreen(Screen):
 
     def on_enter(self, *args):
         """Populates the yaml template data."""
-        # self.template_path = f"{TEMPLATE_PATH}{self.ids.topbar.title}.yaml"
         self.template_path = os.path.join(
-            TEMPLATE_PATH, f"{self.ids.topbar.title}.yaml"
+            TEMPLATE_PATH, f"{self.ids.list_title.text}.yaml"
         )
         template = open_yaml_file(self.template_path)
         self.ids.template_text.text = yaml.dump(template)

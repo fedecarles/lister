@@ -18,10 +18,7 @@ from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.textfield import MDTextField, MDTextFieldHelperText
 from kivymd.uix.list import (
     MDList,
-    MDListItem,
 )
-from kivymd.uix.card import MDCardSwipe
-from kivymd.uix.label import MDLabel
 from kivymd.uix.selectioncontrol import MDCheckbox
 from utils import (
     LIST_PATH,
@@ -32,17 +29,6 @@ from utils import (
     open_yaml_file,
     save_to_yaml,
 )
-
-
-# pylint: disable=R0901
-class RoundCard(MDCard):
-    """Round car for list items view."""
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.radius = [
-            30,
-        ]
 
 
 # pylint: disable=R0901
@@ -90,13 +76,16 @@ class ListOfLists(MDList):
         list_name.text = self.ids.headline.text
         template_file = os.path.join(TEMPLATE_PATH, f"{self.ids.headline.text}.yaml")
         list_dir = os.path.join(LIST_PATH, f"{self.ids.headline.text}/")
+        archive_dir = os.path.join(ARCHIVES_PATH, f"{self.ids.headline.text}/")
         try:
+            if os.path.exists(archive_dir):
+                shutil.rmtree(archive_dir)
             shutil.rmtree(list_dir)
             os.remove(template_file)
             self.parent.remove_widget(self)
             self.dialog.dismiss()
         except OSError as e:
-            MDDialog(text=f"Deletion failed: {e}").open()
+            MDDialog(MDDialogSupportingText(text=f"Deletion failed: {e}")).open()
 
     def close_dialog(self, _):
         """Closes the delete list confirmation dialog."""
@@ -104,7 +93,7 @@ class ListOfLists(MDList):
 
 
 # pylint: disable=R0901
-class ListOfItems(MDCardSwipe):
+class ListOfItems(MDCard):
     """List of user created items."""
 
     def __init__(self, **kwargs):
@@ -160,7 +149,9 @@ class ListOfItems(MDCardSwipe):
             shutil.move(source_file, destination_path)
             self.parent.remove_widget(self)
         except OSError as e:
-            MDDialog(text=f"File could not be moved: {e}")
+            MDDialog(
+                MDDialogSupportingText(text=f"File could not be moved: {e}")
+            ).open()
 
 
 class LeftCheckbox(MDCheckbox):

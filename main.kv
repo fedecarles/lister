@@ -69,49 +69,28 @@ ScreenManager:
 <ListOfItems>
     id: list_of_items
     size_hint_y: None
-    height: list_item.height
-    type_swipe: "hand"
     radius: 24
-    on_swipe_complete: (root.delete_item(list_of_items), app.refresh_folder_view())
-
-    MDCardSwipeLayerBox:
-        padding: "8dp"
-        radius: 24
-        size_hint_x: 0.5
-
-        MDIconButton:
-            pos_hint: {"center_y": 0.5}
-            theme_text_color: "Custom"
-            text_color: "e1747e"
-            icon: "trash-can-outline"
-
-    MDCardSwipeFrontBox:
-        _no_ripple_effect: True
-        radius: 24
-        MDCard:
-            theme_bg_color: "Custom"
-            md_bg_color: "566298"
-            radius: 24
-            id: list_item
-            adaptive_height: True
-            spacing: "10dp"
-            padding: "10dp"
-            MDListItemHeadlineText:
-                id: headline
-                text: "Headline"
-                pos_hint: {"center_y": 0.5}
-            MDIconButton:
-                id: view
-                pos_hint: {"center_y": 0.5}
-                icon: "pencil-outline"
-                on_release: root.on_press()
-                theme_text_color: "Custom"
-                text_color: "a9b1d6"
-            MDIconButton:
-                id: check
-                pos_hint: {"center_y": 0.5}
-                icon: "checkbox-blank-outline"
-                on_release: root.mark(check)
+    theme_bg_color: "Custom"
+    md_bg_color: "566298"
+    adaptive_height: True
+    spacing: "10dp"
+    padding: "10dp"
+    MDListItemHeadlineText:
+        id: headline
+        text: "Headline"
+        pos_hint: {"center_y": 0.5}
+    MDIconButton:
+        id: delete_item
+        pos_hint: {"center_y": 0.5}
+        icon: "trash-can-outline"
+        on_release: root.delete_item(list_of_items)
+        theme_text_color: "Custom"
+        text_color: "e1747e"
+    MDIconButton:
+        id: check
+        pos_hint: {"center_y": 0.5}
+        icon: "checkbox-blank-outline"
+        on_release: root.mark(check)
 
 <NewFieldForm>
     MDBoxLayout:
@@ -361,20 +340,24 @@ ScreenManager:
         orientation: "vertical"
         theme_bg_color: "Custom"
         md_bg_color: "242c50"
+        spacing: dp(20)
 
         MDTopAppBar:
             id: topbar
-            halign: "center"
+            type: "small"
             theme_bg_color: "Custom"
             md_bg_color: "3b435f"
+            MDTopAppBarTitle:
+                id: list_title
+                text: "Lister"
 
         MDTextField:
             id: template_text
             multiline: True
-            size: 1, 1
-            pos_hint: {"center_y": .9}
+            size_hint_x: 0.9
+            pos_hint: {"center_x": .5,"center_y": .85}
 
-        MDLabel:
+        Widget:
 
     MDBoxLayout:
         size_hint: (.9, 0.25)
@@ -418,6 +401,31 @@ ScreenManager:
                 theme_text_color: "Custom"
                 text_color: "1f2335"
                 text: "Search"
+
+<RenameDialog>:
+    MDDialogContentContainer:
+        MDTextField:
+            id: rename_field
+            MDTextFieldHintText:
+                text: "Rename"
+    MDDialogButtonContainer:
+        MDButton:
+            id: cancel_btn
+            theme_bg_color: "Custom"
+            md_bg_color: "ff757f"
+            MDButtonText:
+                theme_text_color: "Custom"
+                text_color: "1f2335"
+                text: "Cancel"
+        MDButton:
+            id: rename_btn
+            theme_bg_color: "Custom"
+            md_bg_color: "7aa2f7"
+            MDButtonText:
+                theme_text_color: "Custom"
+                text_color: "1f2335"
+                text: "OK"
+
 
 <TableView>:
     viewclass: 'MDLabel'
