@@ -157,34 +157,34 @@ ScreenManager:
                     icon: "dots-vertical"
                     on_release: root.menu_open(self)
 
-        MDScrollView:
+        ScrollView:
             id: scroll_area
             pos_hint: {"center_y": 0.5, "center_x": 0.5}
             size_hint_x: 0.9
-            spacing: 10
-            do_scroll_x: True
-            do_scroll_y: True
 
         MDBoxLayout:
-            size_hint: (.9, 0.10)
+            size_hint: (.9, 0.25)
             pos_hint: {'center_y': 0.5, "center_x": 0.5}
             MDIconButton:
                 icon: "backspace"
                 on_release: root.manager.current = 'main_screen'
-                elevation: 2
                 gravity: "left"
                 pos_hint: {"center_y": 0.5}
-                them_icon_color: "Custom"
+                theme_icon_color: "Custom"
                 icon_color: "a8b0d7"
+                theme_font_size: "Custom"
+                font_size: "32sp"
+
             Widget:
             MDIconButton:
                 icon: "pencil-outline"
                 on_release: root.new_item(list_title.text) 
-                elevation: 2
                 gravity: "right"
                 pos_hint: {"center_y": 0.5}
-                them_icon_color: "Custom"
+                theme_icon_color: "Custom"
                 icon_color: "a8b0d7"
+                theme_font_size: "Custom"
+                font_size: "32sp"
 
 
 <NewItemScreen>
@@ -212,16 +212,18 @@ ScreenManager:
                 id: added_items
 
         MDBoxLayout:
-            size_hint: (.9, 0.10)
+            size_hint: (.9, 0.25)
             pos_hint: {'center_y': 0.1, "center_x": 0.5}
             MDIconButton:
                 icon: "backspace"
                 size_hint: None, None
                 gravity: "left"
                 pos_hint: {"center_y": 0.5}
-                them_icon_color: "Custom"
+                theme_icon_color: "Custom"
                 icon_color: "a8b0d7"
                 on_release: root.manager.current = 'items_screen'
+                theme_font_size: "Custom"
+                font_size: "32sp"
             Widget:
             MDIconButton:
                 icon: "content-save"
@@ -230,7 +232,9 @@ ScreenManager:
                 theme_text_color: "Custom"
                 text_color: "a8b0d7"
                 on_release: root.on_save()
-  
+                theme_font_size: "Custom"
+                font_size: "32sp"
+ 
     
 
 <ViewItemScreen>
@@ -266,23 +270,27 @@ ScreenManager:
                 id: added_items
 
         MDBoxLayout:
-            size_hint: (.9, 0.10)
+            size_hint: (.9, 0.25)
             pos_hint: {'center_y': 0.1, "center_x": 0.5}
             MDIconButton:
                 icon: "backspace"
                 on_release: root.manager.current = 'items_screen'
                 gravity: "left"
                 pos_hint: {"center_y": 0.5}
-                them_icon_color: "Custom"
+                theme_icon_color: "Custom"
                 icon_color: "a8b0d7"
+                theme_font_size: "Custom"
+                font_size: "32sp"
             Widget:
             MDIconButton:
                 icon: "content-save"
                 on_release: root.on_save()
                 gravity: "right"
                 pos_hint: {"center_y": 0.5}
-                them_icon_color: "Custom"
+                theme_icon_color: "Custom"
                 icon_color: "a8b0d7"
+                theme_font_size: "Custom"
+                font_size: "32sp"
 
 
 <TemplateCreateScreen>
@@ -330,8 +338,10 @@ ScreenManager:
                 on_release: root.manager.current = "main_screen"
                 gravity: "left"
                 pos_hint: {"center_y": 0.5}
-                them_icon_color: "Custom"
+                theme_icon_color: "Custom"
                 icon_color: "a8b0d7"
+                theme_font_size: "Custom"
+                font_size: "32sp"
 
             Widget:
             MDIconButton:
@@ -339,8 +349,10 @@ ScreenManager:
                 on_release: (root.on_save(), app.refresh_folder_view())
                 gravity: "right"
                 pos_hint: {"center_y": 0.5}
-                them_icon_color: "Custom"
+                theme_icon_color: "Custom"
                 icon_color: "a8b0d7"
+                theme_font_size: "Custom"
+                font_size: "32sp"
 
 <EditTemplateScreen>
     name: "edit_template_screen"
@@ -377,16 +389,20 @@ ScreenManager:
             on_release: root.manager.current = "main_screen"
             gravity: "left"
             pos_hint: {"center_y": 0.5}
-            them_icon_color: "Custom"
+            theme_icon_color: "Custom"
             icon_color: "a8b0d7"
+            theme_font_size: "Custom"
+            font_size: "32sp"
         Widget:
         MDIconButton:
             icon: "content-save"
             on_release: root.on_save()
             gravity: "right"
             pos_hint: {"center_y": 0.5}
-            them_icon_color: "Custom"
+            theme_icon_color: "Custom"
             icon_color: "a8b0d7"
+            theme_font_size: "Custom"
+            font_size: "32sp"
 
 <SearchDialog>:
     MDDialogContentContainer:
@@ -436,17 +452,33 @@ ScreenManager:
                 text_color: "1f2335"
                 text: "OK"
 
+<TableCell>:
+    orientation: 'horizontal'
+    label: label
+    size_hint: (None, None)
+    size: (400, 60)  
+    text: ''
+    ScrollView:
+        scroll_type: ['bars', 'content']
+        do_scroll_x: True
+        do_scroll_y: False
+        effect_cls: "ScrollEffect"
+        Label:
+            id: label
+            text_size: None, self.height
+            size_hint: (None, 1)
+            width: self.texture_size[0]
+            text: root.text
+            padding_x: 10
 
 <TableView>:
-    viewclass: 'MDLabel'
+    viewclass: 'TableCell'
     RecycleGridLayout:
         id: recycle_grid
-        cols: 4
-        default_size: None, dp(26)
+        cols: self.cols
+        default_size: None, dp(30)
         default_size_hint: None, None
-        size_hint_x: None
-        size_hint_y: None
+        size_hint: None, None
         height: self.minimum_height
         width: self.minimum_width
-        orientation: 'lr-tb'
 

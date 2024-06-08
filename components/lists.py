@@ -3,7 +3,9 @@
 import os
 import shutil
 
+from kivy.properties import StringProperty, BooleanProperty
 from kivy.uix.recycleview import RecycleView
+from kivymd.uix.recycleview import MDRecycleView
 from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.card import MDCard
 from kivymd.uix.dialog import (
@@ -221,6 +223,10 @@ class NewItemForm(MDBoxLayout):
         super().__init__(**kwargs)
 
 
-class TableView(RecycleView):
+class TableView(MDRecycleView):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
+
+class TableCell(MDBoxLayout):
+    text = StringProperty(None)
