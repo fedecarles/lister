@@ -1,35 +1,19 @@
 """Item List View Screen"""
 
 from concurrent.futures import ThreadPoolExecutor
-import logging
-import csv
 import os
+import csv
+import logging
 
-from kivy.metrics import dp
-from kivy.uix.screenmanager import Screen
-from kivy.clock import mainthread
 from kivy.clock import Clock
-from kivy.uix.recycleview import RecycleView
-from kivy.uix.recycleboxlayout import RecycleBoxLayout
-from kivy.uix.recyclegridlayout import RecycleGridLayout
+from kivy.uix.screenmanager import Screen
 
-from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.label import MDLabel
-from kivymd.app import MDApp
-from kivymd.uix.list import (
-    MDList,
-    MDListItem,
-    MDListItemHeadlineText,
-)
-from kivymd.uix.dialog import MDDialog, MDDialogSupportingText
+from kivymd.uix.list import MDList
 from kivymd.uix.menu import MDDropdownMenu
-from kivymd.uix.recycleview import MDRecycleView
+from kivymd.uix.dialog import MDDialog, MDDialogSupportingText
 
-# from kivymd.uix.datatables import MDDataTable
-from kivymd.uix.button import MDButton, MDButtonText, MDButtonIcon
-
-
-from components.lists import ListOfItems, TableView
+from components.forms import TableView
+from components.lists import ListOfItems
 from components.dialogs import SearchDialog, RenameDialog
 from utils import (
     EXPORTS_PATH,
@@ -37,12 +21,9 @@ from utils import (
     ARCHIVES_PATH,
     TEMPLATE_PATH,
     change_screen,
-    dicts_to_table,
     get_screen_element,
     open_yaml_file,
     sort_files_by_datetime,
-    create_dialog,
-    log_runtime,
 )
 
 
@@ -62,14 +43,11 @@ class ItemsScreen(Screen):
         self.md_list = MDList(spacing="12dp")
         self.reverse = False
 
-    @log_runtime
     def on_enter(self, *args):
         """Populates the list Items."""
         self.ids.scroll_area.clear_widgets()  # on changing lists, clear widgets
-        # self.title = self.ids.list_title.text
         self.refresh_view()
 
-    @log_runtime
     def refresh_view(self):
         """Refreshes the view based on the selected mode."""
         self.ids.scroll_area.clear_widgets()
@@ -100,13 +78,11 @@ class ItemsScreen(Screen):
         )
         menu.open()
 
-    @log_runtime
-    def update_sort_btn_text(self, caller_btn, index, col):
+    def update_sort_btn_text(self, _caller_btn, _index, col):
         """Updates the sort button dropdown value."""
         self.sort_by = col
         self.refresh_view()
 
-    @log_runtime
     def populate_list_view(self, source: str):
         """Populates the list view."""
 
@@ -135,10 +111,13 @@ class ItemsScreen(Screen):
                     logging.error(f"Error processing file {file_path}: {e}")
                     return None
 
+            cond_1 = len(self.md_list.children) != len(sorted_files)
+            cond_2 = self.ids.list_title.text != self.title
+            cond_3 = self.view == "archive" and source != "ARCHIVES_PATH"
+            cond_4 = self.view == "list" and source != "LIST_PATH"
+
             # Use ThreadPoolExecutor to process files in parallel
-            if (len(self.md_list.children) != len(sorted_files)) or (
-                self.ids.list_title.text != self.title
-            ):
+            if (cond_1) or (cond_2) or (cond_3) or (cond_4):
                 self.md_list.clear_widgets()
                 with ThreadPoolExecutor() as executor:
                     items_data = sorted(
@@ -155,7 +134,6 @@ class ItemsScreen(Screen):
         except OSError:
             MDDialog(MDDialogSupportingText(text="No items to show.")).open()
 
-    @log_runtime
     def update_ui(self, items_data):
         """Updates the UI with processed items data."""
 
@@ -174,7 +152,6 @@ class ItemsScreen(Screen):
             self.md_list.add_widget(item_row)
         self.ids.scroll_area.add_widget(self.md_list)
 
-    @log_runtime
     def populate_table_view(self):
         """Populates the table view."""
         all_dicts = []
@@ -218,7 +195,6 @@ class ItemsScreen(Screen):
                 MDDialogSupportingText(text=f"Table could not be generated: {e}")
             ).open()
 
-    @log_runtime
     def menu_open(self, topbar):
         """Opens the field category dropdown menu."""
         menu_items = [
@@ -231,6 +207,14 @@ class ItemsScreen(Screen):
                 "on_release": lambda x="table": self.update_view(topbar, x),
             },
             {
+                "text": "Archive Archive",
+                "on_release": lambda x="archive": self.update_view(topbar, x),
+            },
+            {
+                "text": "Move to Archive/Inbox",
+                "on_release": lambda x="archive": self.move_to_archive(),
+            },
+            {
                 "text": "Export Data",
                 "on_release": lambda _="export": self.export_data(
                     self.ids.list_title.text
@@ -239,14 +223,6 @@ class ItemsScreen(Screen):
             {
                 "text": "Edit Template",
                 "on_release": lambda _="edit": self.go_to_edit_template(),
-            },
-            {
-                "text": "Move to Archive/Inbox",
-                "on_release": lambda x="archive": self.move_to_archive(),
-            },
-            {
-                "text": "View Archive",
-                "on_release": lambda x="archive": self.update_view(topbar, x),
             },
             {
                 "text": "Rename List",
@@ -260,13 +236,11 @@ class ItemsScreen(Screen):
         )
         menu.open()
 
-    @log_runtime
     def update_view(self, _, text):
         """Updates the view based on user selection."""
         self.view = text
         self.refresh_view()
 
-    @log_runtime
     def export_data(self, list_name):
         """Exports list data to csv."""
         data = []
@@ -298,14 +272,12 @@ class ItemsScreen(Screen):
         except OSError as e:
             MDDialog(MDDialogSupportingText(text=f"Export failed: {e}")).open()
 
-    @log_runtime
     def new_item(self, item):
         """Moves to the New Template screen"""
         get_screen_element("new_item_screen", "added_items").clear_widgets()
         get_screen_element("new_item_screen", "item_title").text = item
         change_screen("new_item_screen")
 
-    @log_runtime
     def search(self):
         """Opens the search dialog."""
         dialog = SearchDialog()
@@ -316,7 +288,6 @@ class ItemsScreen(Screen):
         dialog = RenameDialog()
         dialog.open_rename_dialog()
 
-    @log_runtime
     def reset_list(self):
         """Resets the items view."""
         # for table view, ignore reset
@@ -325,15 +296,14 @@ class ItemsScreen(Screen):
         self.ids.scroll_area.clear_widgets()
         self.refresh_view()
 
-    @log_runtime
     def go_to_edit_template(self):
         """Displays the edit template view."""
         topbar_title = get_screen_element("edit_template_screen", "list_title")
         topbar_title.text = self.ids.list_title.text
         self.manager.current = "edit_template_screen"
 
-    @log_runtime
     def move_to_archive(self):
+        """Moves item to the archive section."""
         items_to_remove = []
         if self.view == "list":
             items_to_remove = [
@@ -352,6 +322,7 @@ class ItemsScreen(Screen):
         self.refresh_view()
 
     def rename_list(self):
+        """Renames the list."""
         dialog = RenameDialog()
         dialog.open_rename_dialog(
             self.ids.list_title, TEMPLATE_PATH, LIST_PATH, ARCHIVES_PATH

@@ -1,9 +1,9 @@
 """Custom Dialogs classes"""
 
-from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.dialog import MDDialog
 import os
 import yaml
+
+from kivymd.uix.dialog import MDDialog
 
 
 # pylint: disable=R0901
@@ -17,7 +17,7 @@ class SearchDialog(MDDialog):
             search_results = [
                 item
                 for item in container.children
-                if self.ids.search_field.text in item.ids.headline.text
+                if self.ids.search_field.text.lower() in item.ids.headline.text.lower()
             ]
 
             if search_results:
@@ -27,7 +27,7 @@ class SearchDialog(MDDialog):
 
             self.dismiss_dialog(_)
 
-        self.ids.cancel_btn.bind(on_release=lambda x: self.dismiss_dialog(x))
+        self.ids.cancel_btn.bind(on_release=self.dismiss_dialog)
         self.ids.search_btn.bind(on_release=search_callback)
         self.open()
 
@@ -66,7 +66,7 @@ class RenameDialog(MDDialog):
             os.rename(old_archive, new_archive)
             self.dismiss_dialog(_)
 
-        self.ids.cancel_btn.bind(on_release=lambda x: self.dismiss_dialog(x))
+        self.ids.cancel_btn.bind(on_release=self.dismiss_dialog)
         self.ids.rename_btn.bind(on_release=rename_callback)
         self.open()
 

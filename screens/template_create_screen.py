@@ -5,13 +5,8 @@ import os
 from kivy.uix.screenmanager import Screen
 
 from kivymd.uix.dialog import MDDialog, MDDialogSupportingText
-from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.button import MDButton, MDButtonText
-from kivymd.uix.menu import MDDropdownMenu
-from kivymd.uix.dropdownitem import MDDropDownItem, MDDropDownItemText
-from kivymd.uix.textfield import MDTextField
 
-from components.lists import NewFieldForm
+from components.forms import NewFieldForm
 from utils import (
     LIST_PATH,
     TEMPLATE_PATH,

@@ -3,26 +3,12 @@
 from datetime import datetime
 
 from kivy.uix.screenmanager import Screen
-from kivymd.uix.dialog import (
-    MDDialog,
-    MDDialogSupportingText,
-    MDDialogContentContainer,
-    MDDialogButtonContainer,
-)
-from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.dialog.dialog import MDDialog
+
 from kivymd.uix.menu import MDDropdownMenu
 from kivymd.uix.pickers import MDModalDatePicker
-from kivymd.uix.textfield import (
-    MDTextField,
-    MDTextFieldHelperText,
-    MDTextFieldTrailingIcon,
-    MDTextFieldLeadingIcon,
-    MDTextFieldHintText,
-    MDTextFieldMaxLengthText,
-)
-from components.lists import NewItemForm
+from kivymd.uix.dialog import MDDialog, MDDialogSupportingText
 
+from components.forms import NewItemForm
 from utils import (
     LIST_PATH,
     TEMPLATE_PATH,
@@ -40,6 +26,7 @@ class NewItemScreen(Screen):
         super().__init__(**kwargs)
         self.category_fields = []
         self.options = {}
+        self.dropdown = MDDropdownMenu()
 
     def open_date_picker(self, text_field, instance):
         """Displays the date picker for date fields."""
@@ -56,7 +43,7 @@ class NewItemScreen(Screen):
         if instance:
             date_picker.open()
 
-    def show_dropdown(self, text_field, instance):
+    def show_dropdown(self, text_field, _instance):
         """Displays the Category field dropdown."""
         options = self.options[text_field.children[0].text]
         menu_items = [
@@ -83,7 +70,6 @@ class NewItemScreen(Screen):
         for fields in template.values():
             for field in fields:
                 self.add_widget_by_field_type(self.ids.added_items, field)
-            # self.ids.added_items.add_widget(placeholder, index=0)
 
     def add_widget_by_field_type(self, placeholder, field):
         """Builds widgets from template."""
@@ -105,6 +91,8 @@ class NewItemScreen(Screen):
         elif field_type == "Category":
             icon = "clipboard-list-outline"
             add_field.ids.new_field_value.bind(focus=self.show_dropdown)
+        else:
+            icon = "note-text-outline"
 
         add_field.ids.field_type_icon.icon = icon
         add_field.ids.helper_text.text = field_name

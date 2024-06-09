@@ -9,7 +9,6 @@ from kivy.uix.screenmanager import ScreenManager
 
 from components.lists import ListOfLists
 
-from kivymd.uix.list import MDListItem, MDListItemHeadlineText
 from screens.main_screen import MainScreen
 from screens.items_screen import ItemsScreen
 from screens.new_item_screen import NewItemScreen
@@ -40,18 +39,6 @@ class MainApp(MDApp):
     def on_start(self):
         """Populate the List of Lists."""
         self.refresh_folder_view()
-
-        # if os.path.exists(LIST_PATH):
-        #    self.folder_list = get_folder_list(LIST_PATH)
-        #    all_lists = os.listdir(LIST_PATH)
-        #    main_screen = self.root.get_screen("main_screen")
-
-        #    for list_item in all_lists:
-        #        # add_list = ListOfLists(MDListItemHeadlineText(text=list_item))
-        #        add_list = ListOfLists()
-        #        add_list.ids.list_name.text = list_item
-        #        # add_list = MDListItem(MDListItemHeadlineText(text=list_item))
-        #        main_screen.ids.list_container.add_widget(add_list)
 
     def refresh_folder_view(self):
         """Updates the display to show the current list of folders."""
@@ -99,7 +86,6 @@ class MainApp(MDApp):
             from android.storage import primary_external_storage_path
 
             # Get the app's internal storage directory
-            # app_dir = self.user_data_dir
             app_dir = primary_external_storage_path()
 
             # Create the 'Lister' directory if it doesn't exist

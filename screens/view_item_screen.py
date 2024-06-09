@@ -2,9 +2,8 @@
 
 import os
 
-from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.textfield import MDTextField, MDTextFieldHelperText
 from kivymd.uix.selectioncontrol import MDCheckbox
+from kivymd.uix.textfield import MDTextField, MDTextFieldHelperText
 
 from screens.new_item_screen import NewItemScreen
 from utils import (
@@ -12,14 +11,12 @@ from utils import (
     open_yaml_file,
     save_to_yaml,
     list_items_to_dict,
-    log_runtime,
 )
 
 
 class ViewItemScreen(NewItemScreen):
     """Item View screen."""
 
-    @log_runtime
     def on_enter(self, *args):
         """Loads the yaml file fields into UI."""
         self.ids.added_items.clear_widgets()
@@ -27,12 +24,6 @@ class ViewItemScreen(NewItemScreen):
 
         yaml_file_path = f"{self.ids.item_title.text}.yaml"
         item_dict = open_yaml_file(yaml_file_path)
-
-        # placeholder = MDBoxLayout(
-        #    orientation="vertical",
-        #    size_hint_y=None,
-        #    adaptive_height=True,
-        # )
 
         for key, value in item_dict.items():
             if key == "checked":

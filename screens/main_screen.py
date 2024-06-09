@@ -1,20 +1,12 @@
 """Main Screen"""
 
-import os
-
 from kivy.uix.screenmanager import Screen
-
-from kivymd.app import MDApp
-from kivymd.uix.menu import MDDropdownMenu
 
 from components.lists import ListOfLists
 from components.dialogs import SearchDialog
 from utils import (
     LIST_PATH,
-    ASSETS_PATH,
     get_folder_list,
-    save_to_yaml,
-    create_dialog,
 )
 
 
@@ -26,6 +18,7 @@ class MainScreen(Screen):
         self.dialog = None
 
     def search(self):
+        """Opens search dialog."""
         dialog = SearchDialog()
         dialog.open_search_dialog(self.ids.list_container)
 

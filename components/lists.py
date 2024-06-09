@@ -3,29 +3,20 @@
 import os
 import shutil
 
-from kivy.properties import StringProperty, BooleanProperty
-from kivy.uix.recycleview import RecycleView
-from kivymd.uix.recycleview import MDRecycleView
-from kivymd.uix.boxlayout import MDBoxLayout
-from kivymd.uix.card import MDCard
+
 from kivymd.uix.dialog import (
     MDDialog,
-    MDDialogSupportingText,
     MDDialogContentContainer,
-    MDDialogButtonContainer,
+    MDDialogSupportingText,
 )
+from kivymd.uix.card import MDCard
+from kivymd.uix.list import MDList
 from kivymd.uix.button import MDButton, MDButtonText
-from kivymd.uix.dropdownitem import MDDropDownItem, MDDropDownItemText
-from kivymd.uix.menu import MDDropdownMenu
-from kivymd.uix.textfield import MDTextField, MDTextFieldHelperText
-from kivymd.uix.list import (
-    MDList,
-)
-from kivymd.uix.selectioncontrol import MDCheckbox
+
 from utils import (
+    ARCHIVES_PATH,
     LIST_PATH,
     TEMPLATE_PATH,
-    ARCHIVES_PATH,
     change_screen,
     get_screen_element,
     open_yaml_file,
@@ -39,7 +30,7 @@ class ListOfLists(MDList):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.dialog = None
+        self.dialog = MDDialog()
 
     def on_release(self):
         """Sets the screen title to the item title."""
@@ -154,79 +145,3 @@ class ListOfItems(MDCard):
             MDDialog(
                 MDDialogSupportingText(text=f"File could not be moved: {e}")
             ).open()
-
-
-class LeftCheckbox(MDCheckbox):
-    pass
-
-
-class NewFieldForm(MDList):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-    def menu_open(self, caller_btn):
-        """Opens the field category dropdown menu."""
-        options = ["Text", "Number", "Date", "Category"]
-        menu_items = [
-            {
-                "text": f"{o}",
-                "on_release": lambda x=f"{o}": self.update_button_text(caller_btn, x),
-            }
-            for o in options
-        ]
-        menu = MDDropdownMenu(
-            caller=caller_btn,
-            items=menu_items,
-            position="bottom",
-            adaptive_width=True,
-            hor_growth="left",
-        )
-        menu.open()
-
-    def update_button_text(self, caller_btn, text):
-        """Updates the buton with category values."""
-        self.text_field = MDTextField(hint_text="Category A, Category B...")
-        if text == "Category":
-            self.dialog = MDDialog(
-                MDDialogSupportingText(text="Enter Categories"),
-                MDDialogContentContainer(self.text_field),
-                MDDialogButtonContainer(
-                    MDButton(
-                        MDButtonText(text="Cancel"),
-                        md_bg_color="red",
-                        on_release=self.dismiss_dialog,
-                    ),
-                    MDButton(
-                        MDButtonText(text="Save"),
-                        on_release=lambda _: self.set_categories(caller_btn),
-                    ),
-                ),
-            )
-            self.dialog.open()
-        else:
-            self.ids.category_text.text = text
-
-    def dismiss_dialog(self, _):
-        """Closes the dialog."""
-        if self.dialog:
-            self.dialog.dismiss()
-
-    def set_categories(self, caller_btn):
-        """Sets the categories as the button value."""
-        categories = self.text_field.text
-        self.ids.category_text.text = f"[{categories}]"
-        self.dismiss_dialog(caller_btn)
-
-
-class NewItemForm(MDBoxLayout):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-
-class TableView(MDRecycleView):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
-
-class TableCell(MDBoxLayout):
-    text = StringProperty(None)
