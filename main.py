@@ -38,7 +38,42 @@ class MainApp(MDApp):
 
     def on_start(self):
         """Populate the List of Lists."""
-        self.refresh_folder_view()
+        self.request_android_permissions()
+        # self.create_dirs()
+        # if os.path.exists(LIST_PATH):
+        #    self.refresh_folder_view()
+
+    def request_android_permissions(self):
+        """Request necessary permissions on Android."""
+        if platform == "android":
+            from android import api_version
+            from android.permissions import Permission, request_permissions
+
+            def callback(permissions, results):
+                if all(results):
+                    self.create_dirs()
+                    if os.path.exists(LIST_PATH):
+                        self.refresh_folder_view()
+                else:
+                    self.stop()
+
+            if int(api_version) <= 32:
+                request_permissions(
+                    [
+                        Permission.READ_EXTERNAL_STORAGE,
+                        Permission.WRITE_EXTERNAL_STORAGE,
+                    ],
+                    callback,
+                )
+            else:
+                self.create_dirs()
+                if os.path.exists(LIST_PATH):
+                    self.refresh_folder_view()
+
+        else:
+            self.create_dirs()
+            if os.path.exists(LIST_PATH):
+                self.refresh_folder_view()
 
     def refresh_folder_view(self):
         """Updates the display to show the current list of folders."""
@@ -60,29 +95,6 @@ class MainApp(MDApp):
     def create_dirs(self):
         """Creates the initial lists and templates folders."""
         if platform == "android":
-            # pylint: disable=E0401
-            # pylint: disable=C0415
-            from android.permissions import Permission, request_permissions
-
-            request_permissions(
-                [
-                    Permission.INTERNET,
-                    Permission.READ_EXTERNAL_STORAGE,
-                    Permission.WRITE_EXTERNAL_STORAGE,
-                ],
-                self.on_request_permissions_done,
-            )
-        else:
-            os.makedirs(LIST_PATH, exist_ok=True)
-            os.makedirs(TEMPLATE_PATH, exist_ok=True)
-            os.makedirs(EXPORTS_PATH, exist_ok=True)
-            os.makedirs(ARCHIVES_PATH, exist_ok=True)
-
-    def on_request_permissions_done(self, _permissions, grant_results):
-        """Create folders on permissions granted."""
-        if all(grant_results):
-            # pylint: disable=E0401
-            # pylint: disable=C0415
             from android.storage import primary_external_storage_path
 
             # Get the app's internal storage directory
@@ -98,12 +110,16 @@ class MainApp(MDApp):
             for folder in folders:
                 folder_path = os.path.join(lister_dir, folder)
                 os.makedirs(folder_path, exist_ok=True)
+
         else:
-            self.stop()
+            os.makedirs(LIST_PATH, exist_ok=True)
+            os.makedirs(TEMPLATE_PATH, exist_ok=True)
+            os.makedirs(EXPORTS_PATH, exist_ok=True)
+            os.makedirs(ARCHIVES_PATH, exist_ok=True)
 
     def build(self):
         """Build app theme and screens"""
-        self.create_dirs()
+        # self.create_dirs()
         self.theme_cls.theme_style = "Dark"
 
         sm = ScreenManager()

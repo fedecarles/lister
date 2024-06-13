@@ -9,15 +9,10 @@ import yaml
 
 from kivy.metrics import dp
 from kivy.utils import platform
-from kivymd.uix.dialog import (
-    MDDialog,
-    MDDialogSupportingText,
-    MDDialogContentContainer,
-    MDDialogButtonContainer,
-)
+
 from kivymd.app import MDApp
 from kivymd.uix.list import MDList
-from kivymd.uix.button import MDButton, MDButtonText
+from kivymd.uix.dialog import MDDialog
 from kivymd.uix.textfield import MDTextField
 from kivymd.uix.selectioncontrol import MDCheckbox
 
@@ -42,6 +37,8 @@ ARCHIVES_PATH = os.path.join(DOCUMENTS_PATH, "archives/")
 
 # logging
 def log_runtime(func):
+    """Prints our the function runtime."""
+
     def wrapper(*args, **kwargs):
         start_time = time.time()
         result = func(*args, **kwargs)
@@ -88,7 +85,6 @@ def change_screen(screen: str) -> None:
 
 
 # yaml files operations
-@log_runtime
 def sort_files_by_datetime(file_paths):
     """Sort the yaml files by date suffix."""
 
@@ -101,7 +97,6 @@ def sort_files_by_datetime(file_paths):
     return sorted_file_paths
 
 
-@log_runtime
 def open_yaml_file(path: str) -> dict:
     """
     Summary:
@@ -134,7 +129,6 @@ def save_to_yaml(path, my_dict) -> None:
         print(f"YAML item '{path}' has been created successfully.")
 
 
-@log_runtime
 def get_folder_list(folder: str) -> list:
     """
     Summary:
@@ -149,51 +143,6 @@ def get_folder_list(folder: str) -> list:
     return list(os.listdir(folder))
 
 
-@log_runtime
-def dicts_to_table(list_of_dicts: list, sort_by: int = 0) -> tuple:
-    """
-    Summary:
-    Converts the list of dicts from yaml files into row and column data
-    for MDDataTable
-
-    Parameters:
-    - list_of_dicts (list[dict]): A list of dictionaries.
-    - sort_by (int): An integer.
-
-    Returns:
-    A tuple with the header and row data for the MDDataTable.
-    """
-
-    header_data = []
-
-    dps_all = [
-        [max(20, len(str(col) * 2)) for col in d.values()] for d in list_of_dicts
-    ]
-    dps = [max(dps) for dps in zip(*dps_all)]
-
-    # For sorting purposes, convert the list of dicts to a
-    # single dict where the data columns are a key.
-    all_dicts = {
-        key: [value[key] for value in list_of_dicts] for key in list_of_dicts[0]
-    }
-
-    row_data = [
-        tuple(value[i] for key, value in all_dicts.items())
-        for i in range(len(next(iter(all_dicts.values()))))
-    ]
-    header_data = [(key, dp(dps[index])) for index, key in enumerate(all_dicts.keys())]
-
-    # Sort the dictionary
-    if sort_by is not None:
-        row_data = sorted(
-            zip(*list(all_dicts.values())),
-            key=lambda x: x[sort_by],
-        )
-
-    return header_data, row_data
-
-
-@log_runtime
 def list_items_to_dict(all_list_items: MDList) -> dict:
     """
     Summary:
@@ -217,7 +166,7 @@ def list_items_to_dict(all_list_items: MDList) -> dict:
 
 
 # Dialog operations
-def create_dialog(content, cancel_fn, callback_fn) -> MDDialog:
+def create_dialog(content, _cancel_fn, _callback_fn) -> MDDialog:
     """
     Summary:
     Returns an MDDialog.
@@ -230,13 +179,4 @@ def create_dialog(content, cancel_fn, callback_fn) -> MDDialog:
     Returns:
     An MDDialog
     """
-    return SearchDialog()
-    # return MDDialog(
-    #    MDDialogContentContainer(MDTextField()),
-    #    MDDialogButtonContainer(
-    #        MDButton(
-    #            MDButtonText(text="Cancel"), md_bg_color="red", on_release=cancel_fn
-    #        ),
-    #        MDButton(MDButtonText(text="Search"), on_release=callback_fn),
-    #    ),
-    # )
+    return SearchDialog
