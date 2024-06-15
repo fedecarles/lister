@@ -6,7 +6,8 @@ The source code is available on GitHub under the GNU GPL license (3.0 or later).
 **What information does the Application obtain and how is it used?**
 
 The Application does not obtain any information when you download and use it. Registration is not required to use the Application.
-The Application has not been programmed programmed to collect any personally identifiable information. All data (list items data) created by the user is stored locally in your device only, and can be simply erased by clearing the app's data or uninstalling it. No analytics software is present in the app either.
+
+The Application has not been programmed to collect any personally identifiable information. All data (list items data) created by the user is stored locally in your device only, and can be simply erased by clearing the app's data or uninstalling it. No analytics software is present in the app either.
 
 **Does the Application collect precise real time location information of the device?**
 
