@@ -17,7 +17,7 @@ This Application does not collect precise information about the location of your
 
 Since the Application does not collect any information, no data is shared with third parties.
 
-However the can be stored for download on third-party services that may collect information used to identify you.
+However the Application can be stored for download on third-party services that may collect information used to identify you.
 
 Link to the privacy policy of third-party service providers used by the app
 
