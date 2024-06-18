@@ -17,6 +17,7 @@ from kivymd.uix.textfield import MDTextField
 from kivymd.uix.selectioncontrol import MDCheckbox
 
 from components.dialogs import SearchDialog
+from components.forms import NewItemForm
 
 # File storage paths
 if platform == "android":
@@ -156,11 +157,18 @@ def list_items_to_dict(all_list_items: MDList) -> dict:
     """
     mapped_values = {}
     for item in all_list_items:
-        for child in item.children:
-            if isinstance(child, MDTextField):
-                mapped_values[child.children[0].text] = child.text
-            if isinstance(child, MDCheckbox):
-                mapped_values["checked"] = child.active
+        if isinstance(item, NewItemForm):
+            for child in item.children:
+                if isinstance(child, MDTextField):
+                    mapped_values[child.children[0].text] = child.text
+                if isinstance(child, MDCheckbox):
+                    mapped_values["checked"] = child.active
+        else:
+            if isinstance(item, MDTextField):
+                mapped_values[item.children[0].text] = item.text
+            if isinstance(item, MDCheckbox):
+                mapped_values["checked"] = item.active
+
     mapped_values = dict(reversed(mapped_values.items()))
     return mapped_values
 
