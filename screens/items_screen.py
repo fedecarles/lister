@@ -207,7 +207,7 @@ class ItemsScreen(Screen):
                 "on_release": lambda x="table": self.update_view(topbar, x),
             },
             {
-                "text": "Archive Archive",
+                "text": "View Archive",
                 "on_release": lambda x="archive": self.update_view(topbar, x),
             },
             {
