@@ -16,6 +16,7 @@ from kivymd.uix.recycleview import MDRecycleView
 from kivymd.uix.button import MDButton, MDButtonText
 
 
+# pylint: disable=too-many-ancestors
 class NewFieldForm(MDList):
     """New field form."""
 
@@ -78,14 +79,17 @@ class NewFieldForm(MDList):
         self.dismiss_dialog(caller_btn)
 
 
+# pylint: disable=too-many-ancestors
 class NewItemForm(MDBoxLayout):
     """New item form."""
 
 
+# pylint: disable=too-many-ancestors
 class TableView(MDRecycleView):
     """Table view."""
 
 
+# pylint: disable=too-many-ancestors
 class TableCell(MDBoxLayout):
     """Table cell class for use in TableView"""
 

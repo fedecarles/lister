@@ -108,7 +108,7 @@ class ItemsScreen(Screen):
 
                     return item_data
                 except IOError as e:
-                    logging.error(f"Error processing file {file_path}: {e}")
+                    logging.error("Error processing file %e", e)
                     return None
 
             cond_1 = len(self.md_list.children) != len(sorted_files)

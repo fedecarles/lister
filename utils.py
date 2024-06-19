@@ -7,7 +7,6 @@ from datetime import datetime
 
 import yaml
 
-from kivy.metrics import dp
 from kivy.utils import platform
 
 from kivymd.app import MDApp
@@ -45,7 +44,7 @@ def log_runtime(func):
         result = func(*args, **kwargs)
         end_time = time.time()
         runtime = end_time - start_time
-        logging.info(f"Function {func.__name__} executed in {runtime:.4f} seconds")
+        logging.info("Function %s executed in %s seconds", func.__name__, runtime)
         return result
 
     return wrapper
@@ -174,7 +173,7 @@ def list_items_to_dict(all_list_items: MDList) -> dict:
 
 
 # Dialog operations
-def create_dialog(content, _cancel_fn, _callback_fn) -> MDDialog:
+def create_dialog(_content, _cancel_fn, _callback_fn) -> MDDialog:
     """
     Summary:
     Returns an MDDialog.
