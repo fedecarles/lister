@@ -19,7 +19,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install pylint
         pip install kivy
-        pip install kivymd
+        pip install https://github.com/kivymd/KivyMD/archive/master.zip
         pip install pyyaml
         pip install pillow
         pip install python-for-android
