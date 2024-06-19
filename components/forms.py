@@ -1,5 +1,6 @@
 """Custom field view forms."""
 
+# pylint: disable=E0611
 from kivy.properties import StringProperty
 
 from kivymd.uix.dialog import (

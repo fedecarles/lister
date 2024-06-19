@@ -39,17 +39,19 @@ class MainApp(MDApp):
     def on_start(self):
         """Populate the List of Lists."""
         self.request_android_permissions()
-        # self.create_dirs()
-        # if os.path.exists(LIST_PATH):
-        #    self.refresh_folder_view()
 
     def request_android_permissions(self):
         """Request necessary permissions on Android."""
         if platform == "android":
+            # pylint: disable=C0415
+            # pylint: disable=E0401
             from android import api_version
+
+            # pylint: disable=C0415
+            # pylint: disable=E0401
             from android.permissions import Permission, request_permissions
 
-            def callback(permissions, results):
+            def callback(_permissions, results):
                 if all(results):
                     self.create_dirs()
                     if os.path.exists(LIST_PATH):
