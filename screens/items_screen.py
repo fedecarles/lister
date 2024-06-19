@@ -113,8 +113,8 @@ class ItemsScreen(Screen):
 
             cond_1 = len(self.md_list.children) != len(sorted_files)
             cond_2 = self.ids.list_title.text != self.title
-            cond_3 = self.view == "archive" and source != "ARCHIVES_PATH"
-            cond_4 = self.view == "list" and source != "LIST_PATH"
+            cond_3 = self.view == "archive" and source != ARCHIVES_PATH
+            cond_4 = self.view == "list" and source != LIST_PATH
 
             # Use ThreadPoolExecutor to process files in parallel
             if (cond_1) or (cond_2) or (cond_3) or (cond_4):
