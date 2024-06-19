@@ -97,6 +97,8 @@ class MainApp(MDApp):
     def create_dirs(self):
         """Creates the initial lists and templates folders."""
         if platform == "android":
+            # pylint: disable=C0415
+            # pylint: disable=E0401
             from android.storage import primary_external_storage_path
 
             # Get the app's internal storage directory
