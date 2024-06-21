@@ -17,6 +17,13 @@ class MainScreen(Screen):
         super().__init__(**kwargs)
         self.dialog = None
 
+    def on_enter(self):
+        "Refreshes list on enter"
+        try:
+            self.reset_list()
+        except AttributeError:
+            pass
+
     def search(self):
         """Opens search dialog."""
         dialog = SearchDialog()

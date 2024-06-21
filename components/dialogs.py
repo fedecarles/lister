@@ -63,7 +63,8 @@ class RenameDialog(MDDialog):
 
             os.remove(old_template)
             os.rename(old_list, new_list)
-            os.rename(old_archive, new_archive)
+            if os.path.exists(old_archive):
+                os.rename(old_archive, new_archive)
             self.dismiss_dialog(_)
 
         self.ids.cancel_btn.bind(on_release=self.dismiss_dialog)
