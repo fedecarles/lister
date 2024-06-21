@@ -17,7 +17,7 @@ class MainScreen(Screen):
         super().__init__(**kwargs)
         self.dialog = None
 
-    def on_enter(self):
+    def on_enter(self, *args):
         "Refreshes list on enter"
         try:
             self.reset_list()
