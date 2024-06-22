@@ -31,13 +31,18 @@ data is not hidden behind a database or cloud storage and is easily accessible.
 
 <table>
   <tr>
-    <td><img src="./images/Screenshot_20240512-150159.png" height = "600" width="270"></td>
-    <td><img src="./images/Screenshot_20240512-150113.png" height = "600" width="270"></td>
+    <td><img src="./images/Screenshot_20240615-235819.png" height = "600" width="270"></td>
+    <td><img src="./images/Screenshot_20240615-235506.png" height = "600" width="270"></td>
   </tr>
   <tr>
-    <td><img src="./images/Screenshot_20240512-150322.png" height = "600" width="270"></td>
-    <td><img src="./images/Screenshot_20240512-150334.png" height = "600" width="270"></td>
+    <td><img src="./images/Screenshot_20240615-235822.png" height = "600" width="270"></td>
+    <td><img src="./images/Screenshot_20240616-000254.png" height = "600" width="270"></td>
   </tr>
+  <tr>
+    <td><img src="./images/Screenshot_20240616-003107.png" height = "600" width="270"></td>
+    <td><img src="./images/Screenshot_20240616-000349.png.png" height = "600" width="270"></td>
+  </tr>
+
 </table>
 
 
