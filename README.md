@@ -40,7 +40,7 @@ data is not hidden behind a database or cloud storage and is easily accessible.
   </tr>
   <tr>
     <td><img src="./images/Screenshot_20240616-003107.png" height = "600" width="270"></td>
-    <td><img src="./images/Screenshot_20240616-000349.png.png" height = "600" width="270"></td>
+    <td><img src="./images/Screenshot_20240616-000349.png" height = "600" width="270"></td>
   </tr>
 
 </table>
