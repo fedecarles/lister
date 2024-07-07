@@ -2,6 +2,7 @@
 
 import os
 import yaml
+from yaml.scanner import ScannerError
 
 from kivymd.uix.dialog import MDDialog, MDDialogSupportingText
 from kivy.uix.screenmanager import Screen
@@ -27,6 +28,9 @@ class EditTemplateScreen(Screen):
     def on_save(self):
         """Saves the data to the yaml template."""
         new_template = self.ids.template_text.text
-        new_yaml = yaml.safe_load(new_template)
-        save_to_yaml(self.template_path, new_yaml)
-        MDDialog(MDDialogSupportingText(text="Template saved.")).open()
+        try:
+            new_yaml = yaml.safe_load(new_template)
+            save_to_yaml(self.template_path, new_yaml)
+            MDDialog(MDDialogSupportingText(text="Template saved.")).open()
+        except ScannerError as e:
+            MDDialog(MDDialogSupportingText(text=f"Invalid yaml format:{e}")).open()
