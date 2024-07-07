@@ -1,6 +1,8 @@
 """Main App Build"""
 
 import os
+import logging
+
 
 from kivymd.app import MDApp
 
@@ -27,6 +29,7 @@ from utils import (
 )
 
 CONFIG = open_yaml_file(os.path.join(ASSETS_PATH, "config.yaml"))
+logger = logging.getLogger(__name__)
 
 
 class MainApp(MDApp):
@@ -36,22 +39,21 @@ class MainApp(MDApp):
         super().__init__(**kwargs)
         self.folder_list = []
 
-    def on_start(self):
-        """Populate the List of Lists."""
-        self.request_android_permissions()
+    # def on_start(self):
+    #    """Populate the List of Lists."""
 
     def request_android_permissions(self):
         """Request necessary permissions on Android."""
+        logger.debug(platform)
         if platform == "android":
-            # pylint: disable=C0415
-            # pylint: disable=E0401
+            logger.debug("Detected android device")
             from android import api_version
 
             # pylint: disable=C0415
             # pylint: disable=E0401
             from android.permissions import Permission, request_permissions
 
-            def callback(_permissions, results):
+            def callback(permissions, results):
                 if all(results):
                     self.create_dirs()
                     if os.path.exists(LIST_PATH):
@@ -97,6 +99,7 @@ class MainApp(MDApp):
     def create_dirs(self):
         """Creates the initial lists and templates folders."""
         if platform == "android":
+            logger.debug("Trying to create folders")
             # pylint: disable=C0415
             # pylint: disable=E0401
             from android.storage import primary_external_storage_path
@@ -123,7 +126,8 @@ class MainApp(MDApp):
 
     def build(self):
         """Build app theme and screens"""
-        # self.create_dirs()
+        logger.debug("Requesting permissions")
+        self.request_android_permissions()
         self.theme_cls.theme_style = "Dark"
 
         sm = ScreenManager()

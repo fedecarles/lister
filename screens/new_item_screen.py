@@ -85,6 +85,7 @@ class NewItemScreen(Screen):
             icon = "note-text-outline"
         elif field_type == "Number":
             icon = "format-list-numbered"
+            add_field.ids.new_field_value.input_type = "number"
         elif field_type == "Date":
             icon = "calendar-outline"
             add_field.ids.new_field_value.bind(focus=self.open_date_picker)
